@@ -1,7 +1,7 @@
 # 🍼 Snuggles by Sarang.co  
 ### *Your Baby’s Digital Wellness Companion*
 
-[![Snuggles Logo]([https://ik.imagekit.io/kriz/Screenshot%202025-10-09%20215044.png?updatedAt=1760031002456])(https://krishangz.netlify.app)
+![Snuggles Preview](https://ik.imagekit.io/kriz/Screenshot%202025-10-09%20215044.png?updatedAt=1760031002456)
 
 
 ---
