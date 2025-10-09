@@ -40,11 +40,11 @@ export const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2 shadow-medium hover:shadow-float transition-all">
+              <Button size="lg" className="gap-2 shadow-medium hover:shadow-float transition-all" onClick={() => window.location.href = '/auth'}>
                 <MessageCircle className="w-5 h-5" />
                 Start with SnugBot
               </Button>
-              <Button size="lg" variant="outline" className="border-2">
+              <Button size="lg" variant="outline" className="border-2" onClick={() => window.location.href = '/auth'}>
                 Explore Features
               </Button>
             </div>

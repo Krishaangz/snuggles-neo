@@ -25,9 +25,9 @@ export const About = () => {
       
       <div className="container relative z-10 mx-auto px-4">
         <div className="text-center max-w-4xl mx-auto mb-16 space-y-6 animate-fade-in">
-          <h2 className="text-4xl lg:text-5xl font-bold">
+          <h2 className="text-4xl lg:text-5xl font-bold animate-scale-in">
             The Heart Behind{" "}
-            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent animate-float">
               Snuggles
             </span>
           </h2>
@@ -45,15 +45,19 @@ export const About = () => {
             return (
               <Card 
                 key={index}
-                className="p-8 gradient-card shadow-medium hover:shadow-float transition-all border-2"
+                className="p-8 gradient-card shadow-medium hover:shadow-float transition-all border-2 animate-fade-in hover:scale-105"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <div className="flex items-start gap-4 mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center flex-shrink-0 animate-float">
                     <Icon className="w-8 h-8 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold mb-1">{founder.name}</h3>
+                    <h3 className="text-2xl font-bold mb-1">
+                      <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                        {founder.name}
+                      </span>
+                    </h3>
                     <p className="text-sm text-primary font-medium">{founder.role}</p>
                   </div>
                 </div>
