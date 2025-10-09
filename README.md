@@ -31,56 +31,56 @@ Built under **Sarang.co** — a parent company focused on compassionate health i
   <tbody>
     <tr>
       <td>
-        <img src="https://api.iconify.design/lucide/bot.svg" width="18" height="18" style="vertical-align: middle;"> 
+        <img src="https://api.iconify.design/lucide/bot.svg?color=%23FFB6C1" width="20" height="20" style="vertical-align: middle;"> 
         <strong>SnugBot AI Assistant</strong>
       </td>
       <td>Real-time personalized support with a nurturing AI trained on verified pediatric datasets. Provides day-to-day parenting insights with empathy and scientific accuracy.</td>
     </tr>
     <tr>
       <td>
-        <img src="https://api.iconify.design/lucide/trending-up.svg" width="18" height="18" style="vertical-align: middle;"> 
+        <img src="https://api.iconify.design/lucide/trending-up.svg?color=%2398D8C8" width="20" height="20" style="vertical-align: middle;"> 
         <strong>Growth Tracker</strong>
       </td>
       <td>Tracks height, weight, and developmental milestones against WHO growth charts with AI-powered pattern recognition and adaptive feedback.</td>
     </tr>
     <tr>
       <td>
-        <img src="https://api.iconify.design/lucide/moon.svg" width="18" height="18" style="vertical-align: middle;"> 
+        <img src="https://api.iconify.design/lucide/moon.svg?color=%23ADD8E6" width="20" height="20" style="vertical-align: middle;"> 
         <strong>Sleep & Cry Analyzer</strong>
       </td>
       <td>Predictive AI that analyzes sleep and cry patterns, suggesting optimal nap schedules and environmental adjustments for better rest.</td>
     </tr>
     <tr>
       <td>
-        <img src="https://api.iconify.design/lucide/utensils.svg" width="18" height="18" style="vertical-align: middle;"> 
+        <img src="https://api.iconify.design/lucide/utensils.svg?color=%23FFB6C1" width="20" height="20" style="vertical-align: middle;"> 
         <strong>Nutrition Planner</strong>
       </td>
       <td>Dynamic meal planning tailored to your baby's age, health, and dietary preferences — verified by pediatric nutrition experts.</td>
     </tr>
     <tr>
       <td>
-        <img src="https://api.iconify.design/lucide/heart.svg" width="18" height="18" style="vertical-align: middle;"> 
+        <img src="https://api.iconify.design/lucide/heart.svg?color=%2398D8C8" width="20" height="20" style="vertical-align: middle;"> 
         <strong>Parent Wellness</strong>
       </td>
       <td>Mental wellness mode offering mood tracking, affirmations, and short mindfulness sessions designed to support caregivers' emotional health.</td>
     </tr>
     <tr>
       <td>
-        <img src="https://api.iconify.design/lucide/book-open.svg" width="18" height="18" style="vertical-align: middle;"> 
+        <img src="https://api.iconify.design/lucide/book-open.svg?color=%23ADD8E6" width="20" height="20" style="vertical-align: middle;"> 
         <strong>Expert Content Hub</strong>
       </td>
       <td>Library of verified educational content reviewed by WHO, UNICEF, NHS, and AAP pediatric experts. AI curates content by baby stage and parental needs.</td>
     </tr>
     <tr>
       <td>
-        <img src="https://api.iconify.design/lucide/alert-circle.svg" width="18" height="18" style="vertical-align: middle;"> 
+        <img src="https://api.iconify.design/lucide/alert-circle.svg?color=%23FFB6C1" width="20" height="20" style="vertical-align: middle;"> 
         <strong>Emergency Guide</strong>
       </td>
       <td>Interactive emergency cards for common baby incidents, supported by AI-guided voice navigation and backed by Red Cross and WHO references.</td>
     </tr>
     <tr>
       <td>
-        <img src="https://api.iconify.design/lucide/sparkles.svg" width="18" height="18" style="vertical-align: middle;"> 
+        <img src="https://api.iconify.design/lucide/sparkles.svg?color=%2398D8C8" width="20" height="20" style="vertical-align: middle;"> 
         <strong>Smart Insights</strong>
       </td>
       <td>Daily, personalized recommendations that evolve with each family's journey — from feeding patterns to emotional well-being.</td>
