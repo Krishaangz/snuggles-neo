@@ -1,7 +1,13 @@
-# 🍼 Snuggles by Sarang.co  
-### *Your Baby’s Digital Wellness Companion*
+<h1 align="center">🍼 Snuggles by Sarang.co</h1>
+<h3 align="center"><em>Your Baby’s Digital Wellness Companion</em></h3>
 
-![Snuggles Preview](https://ik.imagekit.io/kriz/Screenshot%202025-10-09%20215044.png?updatedAt=1760031002456)
+<p align="center">
+  <img src="https://ik.imagekit.io/kriz/Screenshot%202025-10-09%20215044.png?updatedAt=1760031002456" 
+       alt="Snuggles by Sarang.co" width="720">
+</p>
+
+<hr>
+
 
 
 ---
