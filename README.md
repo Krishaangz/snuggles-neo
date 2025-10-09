@@ -6,8 +6,6 @@
        alt="Snuggles by Sarang.co" width="720">
 </p>
 
-<hr>
-
 
 
 ---
@@ -123,5 +121,5 @@ To become the world’s most trusted **AI-driven baby wellness companion**, wher
 
 ---
 
-## 📁 Repository Structure (Recommended)
+
 
