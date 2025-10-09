@@ -131,18 +131,20 @@ These are the non-negotiables that guide every decision we make:
 ## 💖 About Us
 
 ### 👩‍⚕️ Sarah Khan, Co-Founder & Chief Health Strategist
-Sarah Khan is a child wellness researcher and healthcare innovator who's genuinely devoted to merging global public health expertise with technology that real people can actually use. She's the one who makes sure every single feature in Snuggles is both scientifically valid and emotionally empathetic. 
+Sarah Khan is a 15-year-old 11th grader from Ahmedabad, Gujarat, currently preparing for NEET with big dreams of becoming a pediatrician or pedodontist. Even at this age, she's genuinely devoted to understanding how global public health expertise can be made accessible through technology that real people can actually use. She's the one who makes sure every single feature in Snuggles is both scientifically valid and emotionally empathetic.
 
-Sarah comes from a background in pediatric research, and she's watched too many parents struggle with conflicting advice and information overload. That's why she's so passionate about creating tools that cut through the noise with verified, trustworthy guidance. She believes that parents deserve support that's as kind as it is credible, and she's built her entire career around making that happen.
+Sarah has watched family members and friends struggle with conflicting parenting advice and information overload, which sparked her passion for creating tools that cut through the noise with verified, trustworthy guidance. While she's still studying to enter medical school, she's already thinking deeply about how healthcare and technology can work together. She believes that parents deserve support that's as kind as it is credible, and she's building toward that vision one step at a time, even while juggling NEET prep and building Snuggles.
 
 > *"Parents deserve guidance that's as kind as it is credible."*
 
 ---
 
 ### 👨‍💻 Krishang Saharia, Co-Founder & Product Visionary
-Krishang Saharia is an AI designer and storyteller who's spent his career trying to create technology that actually feels human. He's super passionate about AI ethics and creative design, which is honestly the perfect combo for building something like Snuggles. 
+Krishang Saharia is a 16-year-old 11th grader from Bhilai, Chhattisgarh, currently preparing for JEE while simultaneously building his dream of launching an AI startup. He's an AI designer and storyteller who's super passionate about creating technology that actually feels human, not robotic.
 
-His whole philosophy is that technology should feel warm and approachable, not cold and clinical. Krishang brings that signature blend of intelligence and warmth to everything we build. He's the one asking questions like "but how does this make a tired parent at 3am feel?" during product meetings, and honestly, we're so grateful for that perspective.
+Before Snuggles, Krishang built some pretty impressive stuff. There's **Trash Trek**, an AI-powered waste detection platform that gamifies recycling. Then **ReGreen**, where landowners can upload their degraded lands and AI-driven task allocation assigns workers to transform them into beautiful green recreational spaces. He also created **Hirelytics**, an AI resume and interview analyzer that helps companies choose the best employees using data analysis and machine learning. And most recently, **EventPulse**, a digital AI calendar that tracks worldwide event databases while managing your personal schedule.
+
+His whole philosophy is that technology should feel warm and approachable, not cold and clinical. Krishang brings that signature blend of intelligence and warmth to everything he builds. He's the one asking questions like "but how does this make a tired parent at 3am feel?" during brainstorming sessions, and honestly, that perspective is what makes Snuggles special. He's proving that you don't have to wait until you're older to build something meaningful that helps real people.
 
 > *"Every piece of code should carry warmth."*
 
