@@ -1,10 +1,95 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Moon, CloudMoon, Sun } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Moon, CloudMoon, Sun, Clock, Volume2 } from "lucide-react";
+import { toast } from "sonner";
+
+interface SleepEntry {
+  date: string;
+  bedtime: string;
+  wakeTime: string;
+  totalHours: number;
+  cryEpisodes: number;
+  cryReason: string;
+}
 
 const SleepAnalyzer = () => {
   const navigate = useNavigate();
+  const [sleepData, setSleepData] = useState<SleepEntry[]>([]);
+  const [bedtime, setBedtime] = useState("");
+  const [wakeTime, setWakeTime] = useState("");
+  const [cryEpisodes, setCryEpisodes] = useState("");
+  const [cryReason, setCryReason] = useState("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("sleep_analyzer_data");
+    if (userData) {
+      setSleepData(JSON.parse(userData));
+    }
+  }, []);
+
+  const calculateHours = (bedtime: string, wakeTime: string) => {
+    const [bedHour, bedMin] = bedtime.split(':').map(Number);
+    const [wakeHour, wakeMin] = wakeTime.split(':').map(Number);
+    
+    let hours = wakeHour - bedHour;
+    let minutes = wakeMin - bedMin;
+    
+    if (hours < 0) hours += 24;
+    if (minutes < 0) {
+      hours--;
+      minutes += 60;
+    }
+    
+    return hours + minutes / 60;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const totalHours = calculateHours(bedtime, wakeTime);
+    
+    const newEntry: SleepEntry = {
+      date: new Date().toLocaleDateString(),
+      bedtime,
+      wakeTime,
+      totalHours: parseFloat(totalHours.toFixed(1)),
+      cryEpisodes: parseInt(cryEpisodes),
+      cryReason,
+    };
+
+    const updatedData = [...sleepData, newEntry];
+    setSleepData(updatedData);
+    localStorage.setItem("sleep_analyzer_data", JSON.stringify(updatedData));
+    
+    toast.success("Sleep data recorded successfully!");
+    setBedtime("");
+    setWakeTime("");
+    setCryEpisodes("");
+    setCryReason("");
+  };
+
+  const getAverageSleep = () => {
+    if (sleepData.length === 0) return "No data";
+    const avg = sleepData.reduce((acc, curr) => acc + curr.totalHours, 0) / sleepData.length;
+    return `${avg.toFixed(1)} hours`;
+  };
+
+  const getRecommendation = () => {
+    if (sleepData.length === 0) return "Record sleep data to get personalized recommendations";
+    const avgSleep = sleepData.reduce((acc, curr) => acc + curr.totalHours, 0) / sleepData.length;
+    
+    if (avgSleep < 10) {
+      return "Consider earlier bedtime routine for better rest";
+    } else if (avgSleep > 14) {
+      return "Great sleep schedule! Keep it consistent";
+    }
+    return "Healthy sleep pattern detected";
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
@@ -18,9 +103,9 @@ const SleepAnalyzer = () => {
           Back to Dashboard
         </Button>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-accent/10 border-2 border-accent/20 flex items-center justify-center mx-auto mb-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8 animate-fade-in">
+            <div className="w-16 h-16 rounded-2xl bg-accent/10 border-2 border-accent/20 flex items-center justify-center mx-auto mb-4 animate-float">
               <Moon className="w-8 h-8 text-accent" />
             </div>
             <h1 className="text-4xl font-bold mb-2">
@@ -33,40 +118,147 @@ const SleepAnalyzer = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="p-6 gradient-card shadow-soft border-2">
-              <CloudMoon className="w-8 h-8 text-accent mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Sleep Patterns</h3>
-              <p className="text-muted-foreground mb-4">
-                AI-powered analysis of sleep duration, quality, and optimal bedtime routines.
-              </p>
-              <div className="text-sm text-muted-foreground">
-                Coming soon: Sleep tracking and pattern recognition
-              </div>
+          <div className="grid lg:grid-cols-3 gap-6 mb-8">
+            <Card className="gradient-card shadow-soft border-2 animate-fade-in">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-accent" />
+                  Average Sleep
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">{getAverageSleep()}</p>
+                <p className="text-sm text-muted-foreground mt-2">Per night</p>
+              </CardContent>
             </Card>
 
-            <Card className="p-6 gradient-card shadow-soft border-2">
-              <Moon className="w-8 h-8 text-primary mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Cry Analysis</h3>
-              <p className="text-muted-foreground mb-4">
-                Understand different cry types and get suggestions for comfort techniques.
-              </p>
-              <div className="text-sm text-muted-foreground">
-                Coming soon: Audio-based cry detection and interpretation
-              </div>
+            <Card className="gradient-card shadow-soft border-2 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CloudMoon className="w-5 h-5 text-primary" />
+                  Sleep Quality
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">
+                  {sleepData.length > 0 ? "Good" : "N/A"}
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">{getRecommendation()}</p>
+              </CardContent>
             </Card>
 
-            <Card className="p-6 gradient-card shadow-soft border-2 md:col-span-2">
-              <Sun className="w-8 h-8 text-secondary mb-4" />
-              <h3 className="text-xl font-semibold mb-4">Bedtime Routines</h3>
-              <p className="text-muted-foreground mb-4">
-                Get personalized bedtime routine suggestions based on your baby's age and sleep patterns.
-              </p>
-              <div className="text-sm text-muted-foreground">
-                Coming soon: Custom routine builder and sleep environment recommendations
-              </div>
+            <Card className="gradient-card shadow-soft border-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Volume2 className="w-5 h-5 text-secondary" />
+                  Cry Episodes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">
+                  {sleepData.length > 0 ? Math.round(sleepData.reduce((acc, curr) => acc + curr.cryEpisodes, 0) / sleepData.length) : "0"}
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">Average per night</p>
+              </CardContent>
             </Card>
           </div>
+
+          <Card className="p-6 gradient-card shadow-medium border-2 mb-8">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Sun className="w-5 h-5 text-primary" />
+              Log Sleep Session
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="bedtime">Bedtime</Label>
+                  <Input
+                    id="bedtime"
+                    type="time"
+                    value={bedtime}
+                    onChange={(e) => setBedtime(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="waketime">Wake Time</Label>
+                  <Input
+                    id="waketime"
+                    type="time"
+                    value={wakeTime}
+                    onChange={(e) => setWakeTime(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="episodes">Number of Cry Episodes</Label>
+                  <Input
+                    id="episodes"
+                    type="number"
+                    value={cryEpisodes}
+                    onChange={(e) => setCryEpisodes(e.target.value)}
+                    placeholder="0"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="reason">Primary Cry Reason</Label>
+                  <Select value={cryReason} onValueChange={setCryReason} required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select reason" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hunger">Hunger</SelectItem>
+                      <SelectItem value="diaper">Diaper Change</SelectItem>
+                      <SelectItem value="discomfort">Discomfort</SelectItem>
+                      <SelectItem value="overstimulation">Overstimulation</SelectItem>
+                      <SelectItem value="unknown">Unknown</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <Button type="submit" className="w-full">Record Sleep Session</Button>
+            </form>
+          </Card>
+
+          <Card className="p-6 gradient-card shadow-soft border-2">
+            <h3 className="text-xl font-semibold mb-4">Sleep History</h3>
+            <div className="space-y-3">
+              {sleepData.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No sleep data recorded yet. Start tracking your baby's sleep above!</p>
+              ) : (
+                sleepData.slice().reverse().map((entry, index) => (
+                  <div key={index} className="p-4 bg-muted/30 rounded-lg border">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="font-semibold mb-2">{entry.date}</p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                          <div>
+                            <p className="text-muted-foreground">Bedtime</p>
+                            <p className="font-medium">{entry.bedtime}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Wake Time</p>
+                            <p className="font-medium">{entry.wakeTime}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Total Sleep</p>
+                            <p className="font-medium">{entry.totalHours}h</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Cry Episodes</p>
+                            <p className="font-medium">{entry.cryEpisodes} ({entry.cryReason})</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </Card>
         </div>
       </div>
     </div>

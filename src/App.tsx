@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 import SnugBot from "./pages/SnugBot";
 import GrowthTracker from "./pages/GrowthTracker";
 import SleepAnalyzer from "./pages/SleepAnalyzer";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/snugbot" element={<SnugBot />} />
           <Route path="/growth-tracker" element={<GrowthTracker />} />
           <Route path="/sleep-analyzer" element={<SleepAnalyzer />} />

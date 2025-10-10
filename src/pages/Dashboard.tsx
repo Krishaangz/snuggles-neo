@@ -10,11 +10,13 @@ import {
   BookOpen,
   AlertCircle,
   Sparkles,
-  LogOut
+  LogOut,
+  Settings as SettingsIcon
 } from "lucide-react";
 import { authStore } from "@/stores/authStore";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import snugMascot from "@/assets/snug-mascot.png";
 
 const features = [
   {
@@ -113,19 +115,33 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
+    <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
+      {/* Floating mascot */}
+      <img
+        src={snugMascot}
+        alt="Snug mascot"
+        className="fixed w-24 h-24 object-contain animate-float opacity-10 pointer-events-none"
+        style={{ right: "10%", top: "15%" }}
+      />
+      
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-8 animate-fade-in">
           <div>
             <h1 className="text-4xl font-bold mb-2">
               Welcome back, <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">{userName}</span>!
             </h1>
             <p className="text-muted-foreground">Choose a feature to get started</p>
           </div>
-          <Button onClick={handleLogout} variant="outline" className="gap-2">
-            <LogOut className="w-4 h-4" />
-            Logout
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => navigate("/settings")} variant="outline" className="gap-2">
+              <SettingsIcon className="w-4 h-4" />
+              Settings
+            </Button>
+            <Button onClick={handleLogout} variant="outline" className="gap-2">
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
