@@ -7,6 +7,7 @@ interface User {
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  membershipTier: 'free' | 'monthly' | 'annual';
 }
 
 const AUTH_STORAGE_KEY = 'snuggles_auth';
@@ -15,6 +16,7 @@ class AuthStore {
   private state: AuthState = {
     user: null,
     isAuthenticated: false,
+    membershipTier: 'free',
   };
 
   private listeners: Set<() => void> = new Set();
@@ -45,7 +47,9 @@ class AuthStore {
 
   subscribe(listener: () => void) {
     this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
   }
 
   getState(): AuthState {
@@ -63,6 +67,7 @@ class AuthStore {
     this.state = {
       user,
       isAuthenticated: true,
+      membershipTier: 'free',
     };
 
     this.saveToStorage();
@@ -80,6 +85,7 @@ class AuthStore {
     this.state = {
       user,
       isAuthenticated: true,
+      membershipTier: 'free',
     };
 
     this.saveToStorage();
@@ -90,10 +96,40 @@ class AuthStore {
     this.state = {
       user: null,
       isAuthenticated: false,
+      membershipTier: 'free',
     };
 
     this.saveToStorage();
   }
+
+  upgradeMembership(tier: 'monthly' | 'annual') {
+    this.state.membershipTier = tier;
+    this.saveToStorage();
+  }
+
+  isPremium(): boolean {
+    return this.state.membershipTier === 'monthly' || this.state.membershipTier === 'annual';
+  }
 }
 
 export const authStore = new AuthStore();
+
+// Hook for React components
+import React from 'react';
+
+export function useAuthStore() {
+  const [state, setState] = React.useState(authStore.getState());
+  
+  React.useEffect(() => {
+    const unsubscribe = authStore.subscribe(() => {
+      setState(authStore.getState());
+    });
+    return unsubscribe;
+  }, []);
+
+  return {
+    ...state,
+    isPremium: () => authStore.isPremium(),
+    upgradeMembership: (tier: 'monthly' | 'annual') => authStore.upgradeMembership(tier),
+  };
+}

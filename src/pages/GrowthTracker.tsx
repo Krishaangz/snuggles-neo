@@ -4,213 +4,148 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, LineChart, TrendingUp, Baby, Ruler, Scale } from "lucide-react";
-import { authStore } from "@/stores/authStore";
-import { toast } from "sonner";
-
-interface GrowthData {
-  date: string;
-  weight: number;
-  height: number;
-  headCircumference: number;
-}
+import { ArrowLeft, TrendingUp, Baby, Ruler, Scale, AlertCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthStore } from "@/stores/authStore";
 
 const GrowthTracker = () => {
   const navigate = useNavigate();
-  const [growthData, setGrowthData] = useState<GrowthData[]>([]);
+  const { toast } = useToast();
+  const { user, isPremium } = useAuthStore();
+  const [measurements, setMeasurements] = useState(() => {
+    const saved = localStorage.getItem("growth_tracker_data");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [babyAge, setBabyAge] = useState(6);
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [headCircumference, setHeadCircumference] = useState("");
+  const [aiAnalysis, setAiAnalysis] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
-    const userData = localStorage.getItem("growth_tracker_data");
-    if (userData) {
-      setGrowthData(JSON.parse(userData));
-    }
-  }, []);
+    localStorage.setItem("growth_tracker_data", JSON.stringify(measurements));
+  }, [measurements]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const newEntry: GrowthData = {
-      date: new Date().toLocaleDateString(),
+  const addMeasurement = () => {
+    if (!user) {
+      toast({ title: "Please login to track growth", variant: "destructive" });
+      return;
+    }
+
+    if (!weight || !height) {
+      toast({ title: "Please enter weight and height", variant: "destructive" });
+      return;
+    }
+
+    const measurement = {
+      date: new Date().toISOString(),
       weight: parseFloat(weight),
       height: parseFloat(height),
-      headCircumference: parseFloat(headCircumference),
+      headCircumference: headCircumference ? parseFloat(headCircumference) : null,
+      ageInMonths: babyAge,
     };
 
-    const updatedData = [...growthData, newEntry];
-    setGrowthData(updatedData);
-    localStorage.setItem("growth_tracker_data", JSON.stringify(updatedData));
-    
-    toast.success("Growth data recorded successfully!");
+    setMeasurements([...measurements, measurement]);
     setWeight("");
     setHeight("");
     setHeadCircumference("");
+    toast({ title: "Measurement added!" });
   };
 
-  const getLatestMetric = (metric: keyof Omit<GrowthData, 'date'>) => {
-    if (growthData.length === 0) return "No data";
-    return `${growthData[growthData.length - 1][metric]} ${metric === 'weight' ? 'kg' : 'cm'}`;
+  const analyzeGrowth = async () => {
+    if (!isPremium()) {
+      toast({ title: "Premium Feature", description: "Upgrade to unlock AI analysis", variant: "destructive" });
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const { data } = await supabase.functions.invoke("analyze-growth", {
+        body: { measurements, babyAge },
+      });
+      setAiAnalysis(data.analysis);
+      toast({ title: "Analysis complete!" });
+    } catch (error) {
+      toast({ title: "Analysis failed", variant: "destructive" });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
-  const getGrowthTrend = () => {
-    if (growthData.length < 2) return "Need more data";
-    const latest = growthData[growthData.length - 1];
-    const previous = growthData[growthData.length - 2];
-    const weightChange = parseFloat(((latest.weight - previous.weight) / previous.weight * 100).toFixed(1));
-    return `${weightChange > 0 ? '+' : ''}${weightChange}% from last entry`;
-  };
+  const current = measurements[measurements.length - 1];
+  const trend = measurements.length >= 2 ? {
+    weightChange: parseFloat((measurements[measurements.length - 1].weight - measurements[measurements.length - 2].weight).toFixed(2)),
+    heightChange: parseFloat((measurements[measurements.length - 1].height - measurements[measurements.length - 2].height).toFixed(2))
+  } : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
-      <div className="container mx-auto px-4 py-8">
-        <Button
-          onClick={() => navigate("/dashboard")}
-          variant="outline"
-          className="mb-6 gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
+    <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background p-8">
+      <div className="container mx-auto max-w-6xl">
+        <Button onClick={() => navigate("/dashboard")} variant="outline" className="mb-6 gap-2">
+          <ArrowLeft className="w-4 h-4" /> Back
         </Button>
 
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8 animate-fade-in">
-            <div className="w-16 h-16 rounded-2xl bg-secondary/10 border-2 border-secondary/20 flex items-center justify-center mx-auto mb-4 animate-float">
-              <LineChart className="w-8 h-8 text-secondary" />
-            </div>
-            <h1 className="text-4xl font-bold mb-2">
-              <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                Growth Tracker
-              </span>
-            </h1>
-            <p className="text-muted-foreground">
-              Track your baby's growth against WHO standards
-            </p>
+        <div className="text-center mb-8 animate-fade-in-up">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center mx-auto mb-4 animate-pulse-ring">
+            <TrendingUp className="w-8 h-8 text-primary" />
           </div>
-
-          <div className="grid lg:grid-cols-3 gap-6 mb-8">
-            <Card className="gradient-card shadow-soft border-2 animate-fade-in">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Scale className="w-5 h-5 text-primary" />
-                  Current Weight
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold">{getLatestMetric('weight')}</p>
-                <p className="text-sm text-muted-foreground mt-2">{getGrowthTrend()}</p>
-              </CardContent>
-            </Card>
-
-            <Card className="gradient-card shadow-soft border-2 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Ruler className="w-5 h-5 text-accent" />
-                  Current Height
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold">{getLatestMetric('height')}</p>
-                <p className="text-sm text-muted-foreground mt-2">Following WHO growth curve</p>
-              </CardContent>
-            </Card>
-
-            <Card className="gradient-card shadow-soft border-2 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Baby className="w-5 h-5 text-secondary" />
-                  Head Circumference
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold">{getLatestMetric('headCircumference')}</p>
-                <p className="text-sm text-muted-foreground mt-2">Healthy development</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="p-6 gradient-card shadow-medium border-2 mb-8">
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
-              Add New Measurement
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="weight">Weight (kg)</Label>
-                  <Input
-                    id="weight"
-                    type="number"
-                    step="0.1"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                    placeholder="e.g., 5.2"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="height">Height (cm)</Label>
-                  <Input
-                    id="height"
-                    type="number"
-                    step="0.1"
-                    value={height}
-                    onChange={(e) => setHeight(e.target.value)}
-                    placeholder="e.g., 52.5"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="head">Head Circumference (cm)</Label>
-                  <Input
-                    id="head"
-                    type="number"
-                    step="0.1"
-                    value={headCircumference}
-                    onChange={(e) => setHeadCircumference(e.target.value)}
-                    placeholder="e.g., 35.0"
-                    required
-                  />
-                </div>
-              </div>
-              <Button type="submit" className="w-full">Record Measurement</Button>
-            </form>
-          </Card>
-
-          <Card className="p-6 gradient-card shadow-soft border-2">
-            <h3 className="text-xl font-semibold mb-4">Growth History</h3>
-            <div className="space-y-3">
-              {growthData.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">No growth data recorded yet. Add your first measurement above!</p>
-              ) : (
-                growthData.slice().reverse().map((entry, index) => (
-                  <div key={index} className="p-4 bg-muted/30 rounded-lg border">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-semibold">{entry.date}</p>
-                        <div className="grid grid-cols-3 gap-4 mt-2 text-sm">
-                          <div>
-                            <p className="text-muted-foreground">Weight</p>
-                            <p className="font-medium">{entry.weight} kg</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground">Height</p>
-                            <p className="font-medium">{entry.height} cm</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground">Head</p>
-                            <p className="font-medium">{entry.headCircumference} cm</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </Card>
+          <h1 className="text-4xl font-bold mb-2">
+            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+              Growth Tracker
+            </span>
+          </h1>
+          <p className="text-muted-foreground">WHO-standard growth analysis</p>
         </div>
+
+        {current && (
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <Card className="gradient-card shadow-soft border-2 animate-scale-in">
+              <CardHeader><CardTitle className="flex items-center gap-2"><Scale className="w-5 h-5 text-primary" />Weight</CardTitle></CardHeader>
+              <CardContent><p className="text-3xl font-bold">{current.weight} kg</p>{trend && <p className="text-sm text-muted-foreground mt-2">{trend.weightChange > 0 ? '+' : ''}{trend.weightChange} kg</p>}</CardContent>
+            </Card>
+            <Card className="gradient-card shadow-soft border-2 animate-scale-in stagger-1">
+              <CardHeader><CardTitle className="flex items-center gap-2"><Ruler className="w-5 h-5 text-accent" />Height</CardTitle></CardHeader>
+              <CardContent><p className="text-3xl font-bold">{current.height} cm</p>{trend && <p className="text-sm text-muted-foreground mt-2">{trend.heightChange > 0 ? '+' : ''}{trend.heightChange} cm</p>}</CardContent>
+            </Card>
+            <Card className="gradient-card shadow-soft border-2 animate-scale-in stagger-2">
+              <CardHeader><CardTitle className="flex items-center gap-2"><Baby className="w-5 h-5 text-secondary" />Records</CardTitle></CardHeader>
+              <CardContent><p className="text-3xl font-bold">{measurements.length}</p><p className="text-sm text-muted-foreground mt-2">Total tracked</p></CardContent>
+            </Card>
+          </div>
+        )}
+
+        <Card className="p-6 gradient-card shadow-medium border-2 mb-6">
+          <h3 className="text-xl font-semibold mb-4">Add Measurement</h3>
+          <div className="grid md:grid-cols-4 gap-4">
+            <div><Label>Age (months)</Label><Input type="number" value={babyAge} onChange={(e) => setBabyAge(parseInt(e.target.value))} /></div>
+            <div><Label>Weight (kg)</Label><Input type="number" step="0.1" value={weight} onChange={(e) => setWeight(e.target.value)} /></div>
+            <div><Label>Height (cm)</Label><Input type="number" step="0.1" value={height} onChange={(e) => setHeight(e.target.value)} /></div>
+            <div><Label>Head (cm)</Label><Input type="number" step="0.1" value={headCircumference} onChange={(e) => setHeadCircumference(e.target.value)} /></div>
+          </div>
+          <div className="flex gap-3 mt-4">
+            <Button onClick={addMeasurement} className="flex-1">Add</Button>
+            <Button onClick={analyzeGrowth} variant="outline" className="flex-1" disabled={isAnalyzing}>{isAnalyzing ? "Analyzing..." : "AI Analysis"}</Button>
+          </div>
+        </Card>
+
+        {aiAnalysis && (
+          <Card className="p-6 mb-6 animate-fade-in-up border-primary/20">
+            <div className="flex gap-3"><AlertCircle className="w-6 h-6 text-primary mt-1" />
+            <div><h3 className="text-lg font-semibold mb-2">WHO Analysis</h3><div className="text-muted-foreground whitespace-pre-wrap">{aiAnalysis}</div></div></div>
+          </Card>
+        )}
+
+        {measurements.length > 0 && (
+          <Card className="p-6"><h3 className="text-xl font-semibold mb-4">History</h3>
+          <div className="space-y-3">{measurements.slice().reverse().map((m: any, i: number) => (
+            <div key={i} className="flex justify-between p-4 bg-muted/30 rounded-lg border">
+              <div><p className="font-semibold">{new Date(m.date).toLocaleDateString()}</p><p className="text-sm text-muted-foreground">Age: {m.ageInMonths}m</p></div>
+              <div className="text-right"><p className="text-sm">W: {m.weight}kg</p><p className="text-sm">H: {m.height}cm</p></div>
+            </div>
+          ))}</div></Card>
+        )}
       </div>
     </div>
   );

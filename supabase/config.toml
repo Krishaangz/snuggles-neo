@@ -6,3 +6,19 @@ enabled = true
 [[edge_functions.functions]]
 name = "snugbot-chat"
 verify_jwt = false
+
+[[edge_functions.functions]]
+name = "analyze-growth"
+verify_jwt = false
+
+[[edge_functions.functions]]
+name = "analyze-sleep"
+verify_jwt = false
+
+[[edge_functions.functions]]
+name = "analyze-nutrition"
+verify_jwt = false
+
+[[edge_functions.functions]]
+name = "analyze-wellness"
+verify_jwt = false
