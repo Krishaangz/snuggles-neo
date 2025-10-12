@@ -10,6 +10,7 @@ import { ArrowLeft, User, Lock, Shield, Trash2, Moon, Sun, Settings as SettingsI
 import { authStore, useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
+import SubscriptionModal from "@/components/SubscriptionModal";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<{name: string, price: string, features: string[]} | null>(null);
 
   const membershipPlans = [
     {
@@ -114,17 +117,9 @@ const Settings = () => {
     }
   };
 
-  const handleUpgrade = (planName: string) => {
-    const tier = planName.toLowerCase() as 'monthly' | 'annual';
-    if (tier !== 'monthly' && tier !== 'annual') {
-      toast.error("Invalid plan selection");
-      return;
-    }
-    authStore.upgradeMembership(tier);
-    toast.success(`Successfully upgraded to ${planName} plan!`);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+  const handleUpgrade = (plan: {name: string, price: string, features: string[]}) => {
+    setSelectedPlan(plan);
+    setSubscriptionModalOpen(true);
   };
 
   return (
@@ -197,7 +192,11 @@ const Settings = () => {
                     <Button
                       className="w-full"
                       variant={plan.popular ? "default" : "outline"}
-                      onClick={() => handleUpgrade(plan.name)}
+                      onClick={() => handleUpgrade({
+                        name: plan.name,
+                        price: plan.price,
+                        features: plan.features
+                      })}
                     >
                       <Crown className="w-4 h-4 mr-2" />
                       Upgrade
@@ -207,6 +206,14 @@ const Settings = () => {
               </Card>
             ))}
           </div>
+
+          <SubscriptionModal
+            open={subscriptionModalOpen}
+            onOpenChange={setSubscriptionModalOpen}
+            planName={selectedPlan?.name || ""}
+            price={selectedPlan?.price || ""}
+            features={selectedPlan?.features || []}
+          />
 
           <div className="space-y-6">
             <Card className="p-6 gradient-card shadow-medium border-2">

@@ -5,12 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { authStore } from "@/stores/authStore";
 import { toast } from "sonner";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showAuthLoading, setShowAuthLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -19,8 +21,7 @@ const Auth = () => {
     if (isLogin) {
       const success = authStore.login(email, password);
       if (success) {
-        toast.success("Welcome back!");
-        navigate("/dashboard");
+        setShowAuthLoading(true);
       }
     } else {
       if (!name || !email || !password) {
@@ -29,11 +30,19 @@ const Auth = () => {
       }
       const success = authStore.register(name, email, password);
       if (success) {
-        toast.success("Account created successfully!");
-        navigate("/dashboard");
+        setShowAuthLoading(true);
       }
     }
   };
+
+  const handleAuthLoadingComplete = () => {
+    toast.success(isLogin ? "Welcome back!" : "Account created successfully!");
+    navigate("/dashboard");
+  };
+
+  if (showAuthLoading) {
+    return <LoadingScreen onComplete={handleAuthLoadingComplete} type="auth" />;
+  }
 
   return (
     <div className="min-h-screen gradient-hero flex items-center justify-center p-4">

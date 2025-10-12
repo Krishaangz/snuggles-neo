@@ -203,8 +203,8 @@ const FloatingSnugBot = () => {
       setCurrentFact(randomFact);
       setIsVisible(true);
       
-      // Random countdown between 30-90 seconds
-      const randomCountdown = Math.floor(Math.random() * 61) + 30;
+      // Random countdown between 15-20 minutes (900-1200 seconds)
+      const randomCountdown = Math.floor(Math.random() * 301) + 900;
       setCountdown(randomCountdown);
     };
 
@@ -222,13 +222,13 @@ const FloatingSnugBot = () => {
       // Hide current fact and schedule next one
       const hideTimer = setTimeout(() => {
         setIsVisible(false);
-        // Show next fact after 30-90 seconds
-        const nextFactDelay = Math.floor(Math.random() * 61000) + 30000;
+        // Show next fact after 15-20 minutes (900000-1200000 milliseconds)
+        const nextFactDelay = Math.floor(Math.random() * 300000) + 900000;
         setTimeout(() => {
           const randomFact = PARENTING_FACTS[Math.floor(Math.random() * PARENTING_FACTS.length)];
           setCurrentFact(randomFact);
           setIsVisible(true);
-          const randomCountdown = Math.floor(Math.random() * 61) + 30;
+          const randomCountdown = Math.floor(Math.random() * 301) + 900;
           setCountdown(randomCountdown);
         }, nextFactDelay);
       }, 5000);

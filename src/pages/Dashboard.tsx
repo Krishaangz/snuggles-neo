@@ -16,7 +16,7 @@ import {
 import { authStore } from "@/stores/authStore";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import snugMascot from "@/assets/snug-mascot.png";
+import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 
 const features = [
   {
@@ -116,14 +116,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
-      {/* Floating mascot */}
-      <img
-        src={snugMascot}
-        alt="Snug mascot"
-        className="fixed w-24 h-24 object-contain animate-float opacity-10 pointer-events-none"
-        style={{ right: "10%", top: "15%" }}
-      />
-      
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8 animate-fade-in">
           <div>
@@ -167,6 +159,8 @@ const Dashboard = () => {
             );
           })}
         </div>
+        
+        <QuoteOfTheDay />
       </div>
     </div>
   );
