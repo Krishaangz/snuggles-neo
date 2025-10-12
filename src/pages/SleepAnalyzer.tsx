@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Moon, CloudMoon, Sun, Clock, Volume2 } from "lucide-react";
+import { ArrowLeft, Moon, CloudMoon, Sun, Clock, Volume2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthStore } from "@/stores/authStore";
 
 interface SleepEntry {
   date: string;
@@ -19,11 +21,15 @@ interface SleepEntry {
 
 const SleepAnalyzer = () => {
   const navigate = useNavigate();
+  const { isPremium } = useAuthStore();
   const [sleepData, setSleepData] = useState<SleepEntry[]>([]);
   const [bedtime, setBedtime] = useState("");
   const [wakeTime, setWakeTime] = useState("");
   const [cryEpisodes, setCryEpisodes] = useState("");
   const [cryReason, setCryReason] = useState("");
+  const [babyAge, setBabyAge] = useState(6);
+  const [aiAnalysis, setAiAnalysis] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
     const userData = localStorage.getItem("sleep_analyzer_data");
@@ -89,6 +95,28 @@ const SleepAnalyzer = () => {
       return "Great sleep schedule! Keep it consistent";
     }
     return "Healthy sleep pattern detected";
+  };
+
+  const analyzeSleep = async () => {
+    if (!isPremium()) {
+      toast.error("Premium Feature - Upgrade to unlock AI sleep analysis");
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("analyze-sleep", {
+        body: { sleepData, babyAge },
+      });
+      
+      if (error) throw error;
+      setAiAnalysis(data.analysis);
+      toast.success("Analysis complete!");
+    } catch (error) {
+      toast.error("Analysis failed - please try again");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   return (
@@ -169,6 +197,17 @@ const SleepAnalyzer = () => {
               Log Sleep Session
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="babyAge">Baby's Age (months)</Label>
+                <Input
+                  id="babyAge"
+                  type="number"
+                  value={babyAge}
+                  onChange={(e) => setBabyAge(parseInt(e.target.value))}
+                  min="0"
+                  max="36"
+                />
+              </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="bedtime">Bedtime</Label>
@@ -219,9 +258,32 @@ const SleepAnalyzer = () => {
                   </Select>
                 </div>
               </div>
-              <Button type="submit" className="w-full">Record Sleep Session</Button>
+              <div className="flex gap-3">
+                <Button type="submit" className="flex-1">Record Sleep Session</Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="flex-1" 
+                  onClick={analyzeSleep}
+                  disabled={isAnalyzing || sleepData.length === 0}
+                >
+                  {isAnalyzing ? "Analyzing..." : "AI Analysis"}
+                </Button>
+              </div>
             </form>
           </Card>
+
+          {aiAnalysis && (
+            <Card className="p-6 mb-8 animate-fade-in border-primary/20">
+              <div className="flex gap-3">
+                <AlertCircle className="w-6 h-6 text-primary mt-1" />
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">AAP Sleep Analysis</h3>
+                  <div className="text-muted-foreground whitespace-pre-wrap">{aiAnalysis}</div>
+                </div>
+              </div>
+            </Card>
+          )}
 
           <Card className="p-6 gradient-card shadow-soft border-2">
             <h3 className="text-xl font-semibold mb-4">Sleep History</h3>

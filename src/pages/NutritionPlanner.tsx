@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, UtensilsCrossed, Apple, Milk, Calendar } from "lucide-react";
+import { ArrowLeft, UtensilsCrossed, Apple, Milk, Calendar, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthStore } from "@/stores/authStore";
 
 interface MealEntry {
   date: string;
@@ -37,12 +39,16 @@ const mealSuggestions = {
 
 const NutritionPlanner = () => {
   const navigate = useNavigate();
+  const { isPremium } = useAuthStore();
   const [mealData, setMealData] = useState<MealEntry[]>([]);
   const [mealType, setMealType] = useState("");
   const [foodItems, setFoodItems] = useState("");
   const [quantity, setQuantity] = useState("");
   const [notes, setNotes] = useState("");
   const [ageRange, setAgeRange] = useState<keyof typeof mealSuggestions>("6-12 months");
+  const [babyAge, setBabyAge] = useState(6);
+  const [aiAnalysis, setAiAnalysis] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
     const userData = localStorage.getItem("nutrition_planner_data");
@@ -76,6 +82,28 @@ const NutritionPlanner = () => {
   const getTodaysMeals = () => {
     const today = new Date().toLocaleDateString();
     return mealData.filter(meal => meal.date === today).length;
+  };
+
+  const analyzeNutrition = async () => {
+    if (!isPremium()) {
+      toast.error("Premium Feature - Upgrade to unlock AI nutrition analysis");
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("analyze-nutrition", {
+        body: { nutritionData: mealData, babyAge },
+      });
+      
+      if (error) throw error;
+      setAiAnalysis(data.analysis);
+      toast.success("Analysis complete!");
+    } catch (error) {
+      toast.error("Analysis failed - please try again");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   return (
@@ -154,6 +182,17 @@ const NutritionPlanner = () => {
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
+                  <Label htmlFor="babyAge">Baby's Age (months)</Label>
+                  <Input
+                    id="babyAge"
+                    type="number"
+                    value={babyAge}
+                    onChange={(e) => setBabyAge(parseInt(e.target.value))}
+                    min="0"
+                    max="36"
+                  />
+                </div>
+                <div>
                   <Label htmlFor="mealType">Meal Type</Label>
                   <Select value={mealType} onValueChange={setMealType} required>
                     <SelectTrigger>
@@ -196,7 +235,18 @@ const NutritionPlanner = () => {
                     placeholder="Any allergies, reactions, or observations"
                   />
                 </div>
-                <Button type="submit" className="w-full">Log Meal</Button>
+                <div className="flex gap-3">
+                  <Button type="submit" className="flex-1">Log Meal</Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="flex-1" 
+                    onClick={analyzeNutrition}
+                    disabled={isAnalyzing || mealData.length === 0}
+                  >
+                    {isAnalyzing ? "Analyzing..." : "AI Analysis"}
+                  </Button>
+                </div>
               </form>
             </Card>
 
@@ -246,6 +296,18 @@ const NutritionPlanner = () => {
               </div>
             </Card>
           </div>
+
+          {aiAnalysis && (
+            <Card className="p-6 mb-8 animate-fade-in border-primary/20">
+              <div className="flex gap-3">
+                <AlertCircle className="w-6 h-6 text-primary mt-1" />
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">WHO/AAP Nutrition Analysis</h3>
+                  <div className="text-muted-foreground whitespace-pre-wrap">{aiAnalysis}</div>
+                </div>
+              </div>
+            </Card>
+          )}
 
           <Card className="p-6 gradient-card shadow-soft border-2">
             <h3 className="text-xl font-semibold mb-4">Meal History</h3>

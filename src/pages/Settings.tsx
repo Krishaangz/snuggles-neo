@@ -7,23 +7,33 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, User, Lock, Shield, Trash2, Moon, Sun, Settings as SettingsIcon, Crown, Check } from "lucide-react";
-import { authStore } from "@/stores/authStore";
+import { authStore, useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 
-const membershipPlans = [
-  {
-    name: "Free",
-    price: "$0",
-    period: "forever",
-    features: [
-      "Sleep & Cry Analyzer",
-      "Emergency Guide",
-      "Basic insights",
-      "Limited daily usage",
-    ],
-    current: true,
-  },
+const Settings = () => {
+  const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
+  const { membershipTier } = useAuthStore();
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+
+  const membershipPlans = [
+    {
+      name: "Free",
+      price: "$0",
+      period: "forever",
+      features: [
+        "Sleep & Cry Analyzer",
+        "Emergency Guide",
+        "Basic insights",
+        "Limited daily usage",
+      ],
+      current: membershipTier === 'free',
+    },
   {
     name: "Monthly",
     price: "$9.99",
@@ -39,7 +49,7 @@ const membershipPlans = [
       "Custom experience settings",
       "Priority support",
     ],
-    current: false,
+    current: membershipTier === 'monthly',
   },
   {
     name: "Annual",
@@ -54,18 +64,9 @@ const membershipPlans = [
       "Custom themes",
       "Early access to new features",
     ],
-    current: false,
+    current: membershipTier === 'annual',
   },
 ];
-
-const Settings = () => {
-  const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
   useEffect(() => {
     const state = authStore.getState();
@@ -114,7 +115,16 @@ const Settings = () => {
   };
 
   const handleUpgrade = (planName: string) => {
-    toast.info(`Upgrade to ${planName} plan - Coming soon!`);
+    const tier = planName.toLowerCase() as 'monthly' | 'annual';
+    if (tier !== 'monthly' && tier !== 'annual') {
+      toast.error("Invalid plan selection");
+      return;
+    }
+    authStore.upgradeMembership(tier);
+    toast.success(`Successfully upgraded to ${planName} plan!`);
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   return (
