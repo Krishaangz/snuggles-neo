@@ -248,6 +248,27 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes slide-down {
+    0% {
+      transform: translateY(-100%) translateX(-50%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0) translateX(-50%);
+      opacity: 1;
+    }
+  }
+
+  @keyframes spin-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
   @keyframes pulse-ring {
     0% {
       transform: scale(0.95);

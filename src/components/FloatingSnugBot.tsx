@@ -195,7 +195,6 @@ const PARENTING_FACTS = [
 const FloatingSnugBot = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentFact, setCurrentFact] = useState("");
-  const [countdown, setCountdown] = useState(0);
 
   useEffect(() => {
     const showRandomFact = () => {
@@ -203,66 +202,57 @@ const FloatingSnugBot = () => {
       setCurrentFact(randomFact);
       setIsVisible(true);
       
-      // Random countdown between 15-20 minutes (900-1200 seconds)
-      const randomCountdown = Math.floor(Math.random() * 301) + 900;
-      setCountdown(randomCountdown);
+      // Auto-hide after 8 seconds
+      setTimeout(() => {
+        setIsVisible(false);
+      }, 8000);
     };
 
     // Show first fact after 10 seconds
-    const initialTimer = setTimeout(showRandomFact, 10000);
+    const initialTimeout = setTimeout(showRandomFact, 10000);
 
-    return () => clearTimeout(initialTimer);
+    // Then show a new fact every 15-20 minutes (900000-1200000 ms)
+    const scheduleNext = () => {
+      const nextDelay = Math.floor(Math.random() * (1200000 - 900000 + 1)) + 900000;
+      setTimeout(() => {
+        showRandomFact();
+        scheduleNext();
+      }, nextDelay);
+    };
+
+    scheduleNext();
+
+    return () => {
+      clearTimeout(initialTimeout);
+    };
   }, []);
-
-  useEffect(() => {
-    if (countdown > 0 && isVisible) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (countdown === 0 && isVisible) {
-      // Hide current fact and schedule next one
-      const hideTimer = setTimeout(() => {
-        setIsVisible(false);
-        // Show next fact after 15-20 minutes (900000-1200000 milliseconds)
-        const nextFactDelay = Math.floor(Math.random() * 300000) + 900000;
-        setTimeout(() => {
-          const randomFact = PARENTING_FACTS[Math.floor(Math.random() * PARENTING_FACTS.length)];
-          setCurrentFact(randomFact);
-          setIsVisible(true);
-          const randomCountdown = Math.floor(Math.random() * 301) + 900;
-          setCountdown(randomCountdown);
-        }, nextFactDelay);
-      }, 5000);
-      return () => clearTimeout(hideTimer);
-    }
-  }, [countdown, isVisible]);
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-50 animate-slide-in-right">
-      <div className="relative max-w-sm">
-        <div className="bg-card border-2 border-primary/20 rounded-2xl shadow-float p-4 pr-12">
-          <div className="flex gap-3 items-start">
-            <img 
-              src={snugMascot} 
-              alt="Snug Bear" 
-              className="w-12 h-12 object-contain flex-shrink-0 animate-bounce-gentle"
-            />
-            <div>
-              <p className="text-sm leading-relaxed text-foreground">
-                {currentFact}
-              </p>
-              <p className="text-xs text-muted-foreground mt-2">
-                Next tip in {countdown}s
-              </p>
-            </div>
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-slide-down max-w-[90vw] md:max-w-md">
+      <div className="bg-card border-2 border-primary/30 rounded-2xl shadow-float p-3 md:p-4 relative">
+        <button
+          onClick={() => setIsVisible(false)}
+          className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors shadow-medium"
+        >
+          <X className="w-4 h-4" />
+        </button>
+        
+        <div className="flex gap-2 md:gap-3">
+          <img 
+            src={snugMascot} 
+            alt="Snug mascot" 
+            className="w-10 h-10 md:w-12 md:h-12 object-contain animate-pulse-ring flex-shrink-0"
+          />
+          <div className="flex-1 min-w-0">
+            <h4 className="font-semibold text-xs md:text-sm text-primary mb-1">
+              💡 Parenting Tip
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {currentFact}
+            </p>
           </div>
-          <button
-            onClick={() => setIsVisible(false)}
-            className="absolute top-3 right-3 p-1 rounded-full hover:bg-muted transition-colors"
-          >
-            <X className="w-4 h-4 text-muted-foreground" />
-          </button>
         </div>
       </div>
     </div>
