@@ -74,6 +74,27 @@ const GrowthTracker = () => {
     }
   };
 
+  const exportData = () => {
+    if (!isPremium()) {
+      toast({ title: "Premium Feature", description: "Upgrade to export data", variant: "destructive" });
+      return;
+    }
+
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "Date,Age (months),Weight (kg),Height (cm),Head Circumference (cm)\n"
+      + measurements.map(m => `${m.date},${m.ageInMonths},${m.weight},${m.height},${m.headCircumference || 'N/A'}`).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "growth_tracker_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({ title: "Data exported successfully!" });
+  };
+
   const current = measurements[measurements.length - 1];
   const trend = measurements.length >= 2 ? {
     weightChange: parseFloat((measurements[measurements.length - 1].weight - measurements[measurements.length - 2].weight).toFixed(2)),
@@ -127,6 +148,7 @@ const GrowthTracker = () => {
           <div className="flex gap-3 mt-4">
             <Button onClick={addMeasurement} className="flex-1">Add</Button>
             <Button onClick={analyzeGrowth} variant="outline" className="flex-1" disabled={isAnalyzing}>{isAnalyzing ? "Analyzing..." : "AI Analysis"}</Button>
+            <Button onClick={exportData} variant="outline" className="flex-1">Export Data</Button>
           </div>
         </Card>
 

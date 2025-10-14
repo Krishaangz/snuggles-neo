@@ -75,14 +75,14 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 220 20% 12%;
-    --foreground: 40 30% 95%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 220 20% 15%;
-    --card-foreground: 40 30% 95%;
+    --card: 222.2 84% 8%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 20% 15%;
-    --popover-foreground: 40 30% 95%;
+    --popover: 222.2 84% 8%;
+    --popover-foreground: 210 40% 98%;
 
     --primary: 340 55% 65%;
     --primary-foreground: 0 0% 100%;
@@ -282,6 +282,57 @@ All colors MUST be HSL.
       transform: scale(0.95);
       box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
     }
+  }
+
+  @keyframes iconExplosion {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes floatAround {
+    0%, 100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+      transform: translate(10px, -10px) rotate(90deg);
+    }
+    50% {
+      transform: translate(-10px, -10px) rotate(180deg);
+    }
+    75% {
+      transform: translate(-10px, 10px) rotate(270deg);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
   }
 
   .animate-slide-in-right {

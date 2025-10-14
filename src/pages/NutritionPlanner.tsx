@@ -106,6 +106,27 @@ const NutritionPlanner = () => {
     }
   };
 
+  const exportData = () => {
+    if (!isPremium()) {
+      toast.error("Premium Feature - Upgrade to export data");
+      return;
+    }
+
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "Date,Meal Type,Food Items,Quantity,Notes\n"
+      + mealData.map(m => `${m.date},${m.mealType},${m.foodItems},${m.quantity},"${m.notes}"`).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "nutrition_planner_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success("Data exported successfully!");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
       <div className="container mx-auto px-4 py-8">
@@ -245,6 +266,15 @@ const NutritionPlanner = () => {
                     disabled={isAnalyzing || mealData.length === 0}
                   >
                     {isAnalyzing ? "Analyzing..." : "AI Analysis"}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="flex-1" 
+                    onClick={exportData}
+                    disabled={mealData.length === 0}
+                  >
+                    Export Data
                   </Button>
                 </div>
               </form>

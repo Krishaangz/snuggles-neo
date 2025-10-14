@@ -336,10 +336,6 @@ const Settings = () => {
                     </Button>
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground p-3 bg-muted/30 rounded-lg">
-                  <Crown className="w-4 h-4 inline mr-1" />
-                  Custom themes and experience customization available with Monthly or Annual membership
-                </p>
               </div>
             </Card>
 

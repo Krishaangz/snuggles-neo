@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ import {
   Star
 } from "lucide-react";
 import { authStore } from "@/stores/authStore";
-import { useEffect } from "react";
 import { toast } from "sonner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import TipsGenerator from "@/components/TipsGenerator";
@@ -120,8 +119,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
-      {showTip && <TipsGenerator onClose={() => setShowTip(false)} />}
-      
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8 animate-fade-in">
           <div>
@@ -134,16 +131,16 @@ const Dashboard = () => {
             <Button 
               onClick={() => setShowTip(true)} 
               variant="outline" 
-              className="gap-2"
+              size="icon"
               title="Get a parenting tip"
             >
-              <Star className="w-4 h-4" />
+              <Star className="w-5 h-5" />
             </Button>
-            <Button onClick={() => navigate("/settings")} variant="outline" className="gap-2">
-              <SettingsIcon className="w-4 h-4" />
+            <Button onClick={() => navigate("/settings")} variant="outline" size="icon">
+              <SettingsIcon className="w-5 h-5" />
             </Button>
-            <Button onClick={handleLogout} variant="outline" className="gap-2">
-              <LogOut className="w-4 h-4" />
+            <Button onClick={handleLogout} variant="outline" size="icon">
+              <LogOut className="w-5 h-5" />
             </Button>
           </div>
         </div>
@@ -174,6 +171,8 @@ const Dashboard = () => {
         
         <QuoteOfTheDay />
       </div>
+
+      {showTip && <TipsGenerator onClose={() => setShowTip(false)} />}
     </div>
   );
 };

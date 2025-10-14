@@ -1,11 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Baby, Heart, Moon, Sun, Star, Coffee, BookOpen, Clock, Smile } from "lucide-react";
 import snugglesLogo from "@/assets/snuggles-logo.png";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/authStore";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export const Hero = () => {
   const [displayedText, setDisplayedText] = useState("");
   const fullText = "Your Baby's Digital Wellness Companion";
+  const [showExplosion, setShowExplosion] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
   
   useEffect(() => {
     let currentIndex = 0;
@@ -21,8 +28,54 @@ export const Hero = () => {
     return () => clearInterval(typingInterval);
   }, []);
 
+  const handleGetStarted = () => {
+    setShowExplosion(true);
+    setTimeout(() => {
+      setShowLoading(true);
+    }, 800);
+    setTimeout(() => {
+      if (isAuthenticated) {
+        navigate("/dashboard");
+      } else {
+        navigate("/auth");
+      }
+    }, 2000);
+  };
+
+  const explosionIcons = [Baby, Heart, Moon, Sun, Star, Coffee, BookOpen, Clock, Smile, Sparkles];
+
+  if (showLoading) {
+    return <LoadingScreen type="initial" onComplete={() => {}} />;
+  }
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      {/* Icon Explosion Animation */}
+      {showExplosion && (
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          {explosionIcons.map((Icon, index) => {
+            const angle = (index / explosionIcons.length) * 2 * Math.PI;
+            const distance = 60;
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            
+            return (
+              <div
+                key={index}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                style={{
+                  animation: `iconExplosion 0.8s ease-out forwards`,
+                  animationDelay: `${index * 0.05}s`,
+                  '--tx': `${x}vw`,
+                  '--ty': `${y}vh`,
+                } as any}
+              >
+                <Icon className="w-8 h-8 text-primary" />
+              </div>
+            );
+          })}
+        </div>
+      )}
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-float" />
@@ -68,21 +121,10 @@ export const Hero = () => {
             <Button 
               size="lg" 
               className="gap-2 shadow-medium hover:shadow-float transition-all hover:scale-105" 
-              onClick={() => window.location.href = '/auth'}
+              onClick={handleGetStarted}
             >
               <Sparkles className="w-5 h-5" />
               Get Started
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-2 hover:scale-105 transition-transform" 
-              onClick={() => {
-                const featuresSection = document.querySelector('#features');
-                featuresSection?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              Learn More
             </Button>
           </div>
           
