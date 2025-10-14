@@ -1,82 +1,104 @@
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Sparkles } from "lucide-react";
-import cloudBearHero from "@/assets/cloud-bear-hero.jpg";
-import heroBackground from "@/assets/hero-background.jpg";
+import { Sparkles } from "lucide-react";
+import snugglesLogo from "@/assets/snuggles-logo.png";
+import { useEffect, useState } from "react";
 
 export const Hero = () => {
+  const [displayedText, setDisplayedText] = useState("");
+  const fullText = "Your Baby's Digital Wellness Companion";
+  
+  useEffect(() => {
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= fullText.length) {
+        setDisplayedText(fullText.slice(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 50);
+    
+    return () => clearInterval(typingInterval);
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background image */}
-      <div 
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage: `url(${heroBackground})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-      
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 gradient-hero opacity-40" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/10 rounded-full blur-3xl animate-pulse" />
+      </div>
       
       <div className="container relative z-10 mx-auto px-4 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left content */}
-          <div className="space-y-8 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">AI-Powered Wellness Companion</span>
-            </div>
-            
-            <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-              Your Baby's Digital{" "}
-              <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                Wellness Companion
-              </span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground leading-relaxed max-w-xl">
-              Personalized, expert-verified AI guidance for modern parents. Track growth, analyze sleep patterns, plan nutrition, and nurture your baby with trusted support.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2 shadow-medium hover:shadow-float transition-all" onClick={() => window.location.href = '/auth'}>
-                <MessageCircle className="w-5 h-5" />
-                Start with SnugBot
-              </Button>
-              <Button size="lg" variant="outline" className="border-2" onClick={() => window.location.href = '/auth'}>
-                Explore Features
-              </Button>
-            </div>
-            
-            <div className="flex items-center gap-8 pt-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary">50K+</div>
-                <div className="text-sm text-muted-foreground">Happy Parents</div>
-              </div>
-              <div className="h-12 w-px bg-border" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-secondary">4.9★</div>
-                <div className="text-sm text-muted-foreground">Expert Rating</div>
-              </div>
-              <div className="h-12 w-px bg-border" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-accent">100%</div>
-                <div className="text-sm text-muted-foreground">Verified Content</div>
-              </div>
-            </div>
+        <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
+          {/* Logo with glow effect */}
+          <div className="relative animate-scale-in">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary blur-2xl opacity-50 rounded-full animate-pulse" />
+            <img 
+              src={snugglesLogo} 
+              alt="Snuggles"
+              className="w-32 h-32 relative z-10 animate-float"
+            />
           </div>
           
-          {/* Right content - Cloud Bear */}
-          <div className="relative animate-scale-in">
-            <div className="relative">
-              <img 
-                src={cloudBearHero} 
-                alt="Snug the Cloud Bear - Your caring AI companion"
-                className="w-full max-w-2xl mx-auto float-animation"
-              />
-              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-primary/20 rounded-full blur-3xl glow-pulse" />
-              <div className="absolute -top-8 -left-8 w-32 h-32 bg-accent/20 rounded-full blur-3xl glow-pulse" style={{ animationDelay: '1s' }} />
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10 rounded-full border border-primary/20 shadow-soft animate-fade-in">
+            <Sparkles className="w-5 h-5 text-primary animate-spin-slow" />
+            <span className="text-sm font-medium bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+              AI-Powered Wellness Companion
+            </span>
+          </div>
+          
+          {/* Animated title with typing effect */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight animate-fade-in">
+            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer">
+              {displayedText}
+            </span>
+            <span className="animate-pulse">|</span>
+          </h1>
+          
+          {/* Description */}
+          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl animate-fade-in stagger-1">
+            Personalized, expert-verified AI guidance for modern parents. Track growth, analyze sleep patterns, plan nutrition, and nurture your baby with trusted support.
+          </p>
+          
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in stagger-2">
+            <Button 
+              size="lg" 
+              className="gap-2 shadow-medium hover:shadow-float transition-all hover:scale-105" 
+              onClick={() => window.location.href = '/auth'}
+            >
+              <Sparkles className="w-5 h-5" />
+              Get Started
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-2 hover:scale-105 transition-transform" 
+              onClick={() => {
+                const featuresSection = document.querySelector('#features');
+                featuresSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Learn More
+            </Button>
+          </div>
+          
+          {/* Stats with gradient backgrounds */}
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 pt-8 animate-fade-in stagger-3">
+            <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 shadow-soft min-w-[120px]">
+              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">50K+</div>
+              <div className="text-xs md:text-sm text-muted-foreground mt-1">Happy Parents</div>
+            </div>
+            <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20 shadow-soft min-w-[120px]">
+              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-secondary to-secondary-light bg-clip-text text-transparent">4.9★</div>
+              <div className="text-xs md:text-sm text-muted-foreground mt-1">Expert Rating</div>
+            </div>
+            <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 shadow-soft min-w-[120px]">
+              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">100%</div>
+              <div className="text-xs md:text-sm text-muted-foreground mt-1">Verified Content</div>
             </div>
           </div>
         </div>

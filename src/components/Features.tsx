@@ -70,7 +70,7 @@ const colorMap = {
 
 export const Features = () => {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section id="features" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/30 to-background" />
       
       <div className="container relative z-10 mx-auto px-4">

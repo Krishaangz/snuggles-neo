@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,12 +12,14 @@ import {
   AlertCircle,
   Sparkles,
   LogOut,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  Star
 } from "lucide-react";
 import { authStore } from "@/stores/authStore";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
+import TipsGenerator from "@/components/TipsGenerator";
 
 const features = [
   {
@@ -87,6 +90,7 @@ const colorMap = {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [showTip, setShowTip] = useState(false);
 
   useEffect(() => {
     const state = authStore.getState();
@@ -116,22 +120,30 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
+      {showTip && <TipsGenerator onClose={() => setShowTip(false)} />}
+      
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8 animate-fade-in">
           <div>
-            <h1 className="text-4xl font-bold mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">
               Welcome back, <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">{userName}</span>!
             </h1>
             <p className="text-muted-foreground">Choose a feature to get started</p>
           </div>
           <div className="flex gap-2">
+            <Button 
+              onClick={() => setShowTip(true)} 
+              variant="outline" 
+              className="gap-2"
+              title="Get a parenting tip"
+            >
+              <Star className="w-4 h-4" />
+            </Button>
             <Button onClick={() => navigate("/settings")} variant="outline" className="gap-2">
               <SettingsIcon className="w-4 h-4" />
-              Settings
             </Button>
             <Button onClick={handleLogout} variant="outline" className="gap-2">
               <LogOut className="w-4 h-4" />
-              Logout
             </Button>
           </div>
         </div>

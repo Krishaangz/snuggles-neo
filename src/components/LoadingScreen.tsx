@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import snugMascot from "@/assets/snug-mascot.png";
+import snugglesLogo from "@/assets/snuggles-logo.png";
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -35,7 +35,7 @@ const LoadingScreen = ({ onComplete, type = "initial" }: LoadingScreenProps) => 
         <div className="relative">
           <div className="absolute inset-0 animate-pulse-ring rounded-full" />
           <img
-            src={snugMascot}
+            src={snugglesLogo}
             alt="Snuggles loading"
             className="w-32 h-32 mx-auto animate-bounce-gentle"
           />

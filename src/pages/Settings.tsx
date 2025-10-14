@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, User, Lock, Shield, Trash2, Moon, Sun, Settings as SettingsIcon, Crown, Check } from "lucide-react";
+import { ArrowLeft, User, Lock, Shield, Trash2, Moon, Sun, Settings as SettingsIcon, Crown, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { authStore, useAuthStore } from "@/stores/authStore";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import SubscriptionModal from "@/components/SubscriptionModal";
+import Essentials from "@/components/Essentials";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const Settings = () => {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<{name: string, price: string, features: string[]} | null>(null);
+  const [showEssentials, setShowEssentials] = useState(false);
 
   const membershipPlans = [
     {
@@ -351,10 +353,30 @@ const Settings = () => {
               </p>
               <Button variant="destructive" onClick={handleDeleteAccount}>
                 Delete Account
+                </Button>
+              </Card>
+            </div>
+
+            {/* Essentials Button */}
+            <div className="flex justify-center my-8">
+              <Button
+                onClick={() => setShowEssentials(!showEssentials)}
+                variant="outline"
+                size="lg"
+                className="gap-2 border-2"
+              >
+                {showEssentials ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                {showEssentials ? "Hide" : "Show"} Essentials
               </Button>
-            </Card>
+            </div>
+
+            {/* Essentials Section */}
+            {showEssentials && (
+              <div className="animate-fade-in">
+                <Essentials />
+              </div>
+            )}
           </div>
-        </div>
       </div>
     </div>
   );
