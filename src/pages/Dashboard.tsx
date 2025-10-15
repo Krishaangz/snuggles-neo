@@ -107,6 +107,7 @@ const Dashboard = () => {
   const [showTip, setShowTip] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [particles, setParticles] = useState([]);
+  const [isNavigating, setIsNavigating] = useState(false);
   const containerRef = useRef(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -188,6 +189,13 @@ const Dashboard = () => {
     }
   };
 
+  const handleCardClick = (path) => {
+    setIsNavigating(true);
+    setTimeout(() => {
+      navigate(path);
+    }, 400);
+  };
+
   const handleLogout = () => {
     authStore.logout();
     toast.success("Logged out successfully");
@@ -220,6 +228,15 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background relative overflow-hidden">
+      {/* Navigation overlay */}
+      {isNavigating && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-[100] animate-fade-in flex items-center justify-center">
+          <div className="animate-spin-slow">
+            <Sparkles className="w-12 h-12 text-primary" />
+          </div>
+        </div>
+      )}
+
       {/* Continuous floating background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-4 h-4 bg-primary/20 rounded-full animate-float" style={{ animationDelay: '0s', animationDuration: '6s' }} />
@@ -280,163 +297,165 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* 3D Carousel Container */}
-        <div 
-          ref={containerRef}
-          className="relative h-[500px] mb-12 perspective-container"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onWheel={handleWheel}
-        >
-          {/* Particle Blast Effect */}
-          {particles.map((particle) => {
-            const ParticleIcon = particle.Icon;
-            return (
-              <div
-                key={particle.id}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                style={{
-                  animation: 'particle-blast 0.8s ease-out forwards',
-                  animationDelay: `${particle.delay}s`,
-                  '--tx': `${particle.x}px`,
-                  '--ty': `${particle.y}px`,
-                  '--rotation': `${particle.rotation}deg`,
-                }}
-              >
-                <ParticleIcon className="w-6 h-6 text-primary/60" />
-              </div>
-            );
-          })}
+        {/* 3D Carousel Container - CENTERED */}
+        <div className="flex items-center justify-center mb-12">
+          <div 
+            ref={containerRef}
+            className="relative w-full max-w-6xl h-[500px] perspective-container"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onWheel={handleWheel}
+          >
+            {/* Particle Blast Effect */}
+            {particles.map((particle) => {
+              const ParticleIcon = particle.Icon;
+              return (
+                <div
+                  key={particle.id}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                  style={{
+                    animation: 'particle-blast 0.8s ease-out forwards',
+                    animationDelay: `${particle.delay}s`,
+                    '--tx': `${particle.x}px`,
+                    '--ty': `${particle.y}px`,
+                    '--rotation': `${particle.rotation}deg`,
+                  }}
+                >
+                  <ParticleIcon className="w-6 h-6 text-primary/60" />
+                </div>
+              );
+            })}
 
-          {/* 3D Card Carousel */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative w-full max-w-md h-full preserve-3d">
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                const style = getCardStyle(index);
-                const isActive = index === currentIndex;
-                
-                return (
-                  <Card
-                    key={index}
-                    onClick={() => isActive && navigate(feature.path)}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 p-8 cursor-pointer border-2 overflow-hidden transition-all duration-700 ease-out backdrop-blur-xl"
-                    style={{
-                      ...style,
-                      background: isActive 
-                        ? 'linear-gradient(135deg, rgba(var(--background), 0.95) 0%, rgba(var(--muted), 0.7) 100%)'
-                        : 'rgba(var(--background), 0.6)',
-                      borderColor: isActive ? colorMap[feature.color] : 'rgba(var(--border), 0.3)',
-                      boxShadow: isActive 
-                        ? `0 20px 60px -12px ${colorMap[feature.color]}40`
-                        : '0 10px 30px -12px rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    {/* Animated gradient border for active card */}
-                    {isActive && (
-                      <div 
-                        className="absolute inset-0 opacity-50"
-                        style={{
-                          background: `linear-gradient(45deg, ${colorMap[feature.color]}, transparent, ${colorMap[feature.color]})`,
-                          backgroundSize: '300% 300%',
-                          animation: 'gradient-shift 3s ease infinite',
-                          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                          WebkitMaskComposite: 'xor',
-                          maskComposite: 'exclude',
-                          padding: '2px',
-                        }}
-                      />
-                    )}
-
-                    {/* Pulsing glow effect for active card */}
-                    {isActive && (
-                      <div 
-                        className="absolute inset-0 blur-2xl opacity-20 animate-pulse"
-                        style={{
-                          background: `radial-gradient(circle, ${colorMap[feature.color]} 0%, transparent 70%)`,
-                        }}
-                      />
-                    )}
-
-                    {/* Icon with continuous animation */}
-                    <div className="relative mb-6 flex justify-center">
-                      <div 
-                        className="w-20 h-20 rounded-full flex items-center justify-center border-2 relative"
-                        style={{
-                          background: `linear-gradient(135deg, ${colorMap[feature.color]}20, ${colorMap[feature.color]}10)`,
-                          borderColor: colorMap[feature.color],
-                          animation: isActive ? 'icon-pulse 2s ease-in-out infinite' : 'none',
-                        }}
-                      >
-                        <Icon 
-                          className="w-10 h-10"
-                          style={{ 
-                            color: colorMap[feature.color],
-                            animation: isActive ? 'icon-rotate 4s linear infinite' : 'none',
+            {/* 3D Card Carousel */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative w-full h-full flex items-center justify-center preserve-3d">
+                {features.map((feature, index) => {
+                  const Icon = feature.icon;
+                  const style = getCardStyle(index);
+                  const isActive = index === currentIndex;
+                  
+                  return (
+                    <Card
+                      key={index}
+                      onClick={() => isActive && handleCardClick(feature.path)}
+                      className="absolute w-80 p-8 cursor-pointer border-2 overflow-hidden transition-all duration-700 ease-out backdrop-blur-xl hover:scale-105 active:scale-95"
+                      style={{
+                        ...style,
+                        background: isActive 
+                          ? 'linear-gradient(135deg, rgba(var(--background), 0.95) 0%, rgba(var(--muted), 0.7) 100%)'
+                          : 'rgba(var(--background), 0.6)',
+                        borderColor: isActive ? colorMap[feature.color] : 'rgba(var(--border), 0.3)',
+                        boxShadow: isActive 
+                          ? `0 20px 60px -12px ${colorMap[feature.color]}40`
+                          : '0 10px 30px -12px rgba(0,0,0,0.2)',
+                      }}
+                    >
+                      {/* Animated gradient border for active card */}
+                      {isActive && (
+                        <div 
+                          className="absolute inset-0 opacity-50"
+                          style={{
+                            background: `linear-gradient(45deg, ${colorMap[feature.color]}, transparent, ${colorMap[feature.color]})`,
+                            backgroundSize: '300% 300%',
+                            animation: 'gradient-shift 3s ease infinite',
+                            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                            WebkitMaskComposite: 'xor',
+                            maskComposite: 'exclude',
+                            padding: '2px',
                           }}
                         />
-                        
-                        {/* Rotating ring around icon */}
-                        {isActive && (
-                          <div 
-                            className="absolute inset-0 rounded-full border-2 border-dashed animate-spin-slow"
-                            style={{ borderColor: colorMap[feature.color] }}
+                      )}
+
+                      {/* Pulsing glow effect for active card */}
+                      {isActive && (
+                        <div 
+                          className="absolute inset-0 blur-2xl opacity-20 animate-pulse"
+                          style={{
+                            background: `radial-gradient(circle, ${colorMap[feature.color]} 0%, transparent 70%)`,
+                          }}
+                        />
+                      )}
+
+                      {/* Icon with continuous animation */}
+                      <div className="relative mb-6 flex justify-center">
+                        <div 
+                          className="w-20 h-20 rounded-full flex items-center justify-center border-2 relative"
+                          style={{
+                            background: `linear-gradient(135deg, ${colorMap[feature.color]}20, ${colorMap[feature.color]}10)`,
+                            borderColor: colorMap[feature.color],
+                            animation: isActive ? 'icon-pulse 2s ease-in-out infinite' : 'none',
+                          }}
+                        >
+                          <Icon 
+                            className="w-10 h-10"
+                            style={{ 
+                              color: colorMap[feature.color],
+                              animation: isActive ? 'icon-rotate 4s linear infinite' : 'none',
+                            }}
                           />
-                        )}
+                          
+                          {/* Rotating ring around icon */}
+                          {isActive && (
+                            <div 
+                              className="absolute inset-0 rounded-full border-2 border-dashed animate-spin-slow"
+                              style={{ borderColor: colorMap[feature.color] }}
+                            />
+                          )}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Content */}
-                    <div className="relative z-10 text-center">
-                      <h3 
-                        className="text-2xl font-bold mb-3 transition-all duration-300"
-                        style={{
-                          background: isActive ? `linear-gradient(to right, ${colorMap[feature.color]}, ${colorMap.accent})` : 'inherit',
-                          WebkitBackgroundClip: isActive ? 'text' : 'inherit',
-                          WebkitTextFillColor: isActive ? 'transparent' : 'inherit',
-                        }}
-                      >
-                        {feature.title}
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        {feature.description}
-                      </p>
-                    </div>
+                      {/* Content */}
+                      <div className="relative z-10 text-center">
+                        <h3 
+                          className="text-2xl font-bold mb-3 transition-all duration-300"
+                          style={{
+                            background: isActive ? `linear-gradient(to right, ${colorMap[feature.color]}, ${colorMap.accent})` : 'inherit',
+                            WebkitBackgroundClip: isActive ? 'text' : 'inherit',
+                            WebkitTextFillColor: isActive ? 'transparent' : 'inherit',
+                          }}
+                        >
+                          {feature.title}
+                        </h3>
+                        <p className="text-muted-foreground leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
 
-                    {/* Corner sparkles for active card */}
-                    {isActive && (
-                      <>
-                        <div className="absolute top-4 right-4 animate-ping">
-                          <Sparkles className="w-4 h-4" style={{ color: colorMap[feature.color] }} />
-                        </div>
-                        <div className="absolute bottom-4 left-4 animate-ping" style={{ animationDelay: '0.5s' }}>
-                          <Sparkles className="w-4 h-4" style={{ color: colorMap[feature.color] }} />
-                        </div>
-                      </>
-                    )}
-                  </Card>
-                );
-              })}
+                      {/* Corner sparkles for active card */}
+                      {isActive && (
+                        <>
+                          <div className="absolute top-4 right-4 animate-ping">
+                            <Sparkles className="w-4 h-4" style={{ color: colorMap[feature.color] }} />
+                          </div>
+                          <div className="absolute bottom-4 left-4 animate-ping" style={{ animationDelay: '0.5s' }}>
+                            <Sparkles className="w-4 h-4" style={{ color: colorMap[feature.color] }} />
+                          </div>
+                        </>
+                      )}
+                    </Card>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          {/* Navigation Dots */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
-            {features.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setCurrentIndex(index);
-                  createParticleBlast();
-                }}
-                className="w-2 h-2 rounded-full transition-all duration-300"
-                style={{
-                  background: index === currentIndex ? colorMap[features[currentIndex].color] : 'rgba(var(--muted-foreground), 0.3)',
-                  transform: index === currentIndex ? 'scale(1.5)' : 'scale(1)',
-                }}
-              />
-            ))}
+            {/* Navigation Dots */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2">
+              {features.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentIndex(index);
+                    createParticleBlast();
+                  }}
+                  className="w-2 h-2 rounded-full transition-all duration-300"
+                  style={{
+                    background: index === currentIndex ? colorMap[features[currentIndex].color] : 'rgba(var(--muted-foreground), 0.3)',
+                    transform: index === currentIndex ? 'scale(1.5)' : 'scale(1)',
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
@@ -529,6 +548,15 @@ const Dashboard = () => {
           }
         }
 
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
         @keyframes icon-pulse {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.1); }
@@ -583,6 +611,10 @@ const Dashboard = () => {
         .animate-fade-in-up {
           animation: fade-in-up 0.6s ease-out forwards;
           opacity: 0;
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.4s ease-out forwards;
         }
 
         .perspective-container {
