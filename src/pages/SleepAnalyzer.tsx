@@ -279,7 +279,7 @@ const SleepAnalyzer = () => {
                   </Select>
                 </div>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button type="submit" className="flex-1">Record Sleep Session</Button>
                 <Button 
                   type="button" 
