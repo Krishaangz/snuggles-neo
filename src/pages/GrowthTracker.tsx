@@ -173,7 +173,7 @@ const GrowthTracker = () => {
               </Select>
             </div>
           </div>
-          <div className="flex gap-3 mt-4">
+          <div className="flex flex-col sm:flex-row gap-3 mt-4">
             <Button onClick={addMeasurement} className="flex-1">Add</Button>
             <Button onClick={analyzeGrowth} variant="outline" className="flex-1" disabled={isAnalyzing}>{isAnalyzing ? "Analyzing..." : "AI Analysis"}</Button>
             <Button onClick={exportData} variant="outline" className="flex-1">Export Data</Button>
