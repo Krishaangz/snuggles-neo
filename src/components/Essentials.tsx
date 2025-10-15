@@ -176,8 +176,8 @@ const Essentials = () => {
                 />
               </div>
               <div className="text-center">
-                <h5 className="text-xl font-bold">CEO Kayze</h5>
-                <p className="text-sm text-muted-foreground">Founder & Visionary</p>
+                <h5 className="text-xl font-bold">Krishang Saharia</h5>
+                <p className="text-sm text-muted-foreground">CEO, Snuggles</p>
               </div>
             </div>
           </div>
