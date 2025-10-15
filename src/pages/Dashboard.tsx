@@ -165,6 +165,7 @@ const Dashboard = () => {
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = e.touches[0].clientX;
   };
 
   const handleTouchMove = (e) => {
@@ -172,12 +173,17 @@ const Dashboard = () => {
   };
 
   const handleTouchEnd = () => {
-    if (touchStartX.current - touchEndX.current > 50) {
-      nextCard();
+    const swipeDistance = Math.abs(touchStartX.current - touchEndX.current);
+    
+    // Only trigger swipe if user moved more than 50px (considered a swipe gesture)
+    if (swipeDistance > 50) {
+      if (touchStartX.current - touchEndX.current > 50) {
+        nextCard();
+      } else if (touchStartX.current - touchEndX.current < -50) {
+        prevCard();
+      }
     }
-    if (touchStartX.current - touchEndX.current < -50) {
-      prevCard();
-    }
+    // If swipe distance is small (<50px), it's considered a tap/click, not a swipe
   };
 
   const handleWheel = (e) => {
