@@ -27,6 +27,7 @@ const SleepAnalyzer = () => {
   const [wakeTime, setWakeTime] = useState("");
   const [cryEpisodes, setCryEpisodes] = useState("");
   const [cryReason, setCryReason] = useState("");
+  const [customReason, setCustomReason] = useState("");
   const [babyAge, setBabyAge] = useState(6);
   const [aiAnalysis, setAiAnalysis] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -57,6 +58,11 @@ const SleepAnalyzer = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (cryReason === "unknown" && customReason.trim().split(/\s+/).length > 50) {
+      toast.error("Custom reason must be 50 words or less");
+      return;
+    }
+    
     const totalHours = calculateHours(bedtime, wakeTime);
     
     const newEntry: SleepEntry = {
@@ -65,7 +71,7 @@ const SleepAnalyzer = () => {
       wakeTime,
       totalHours: parseFloat(totalHours.toFixed(1)),
       cryEpisodes: parseInt(cryEpisodes),
-      cryReason,
+      cryReason: cryReason === "unknown" && customReason.trim() ? customReason.trim() : cryReason,
     };
 
     const updatedData = [...sleepData, newEntry];
@@ -77,6 +83,7 @@ const SleepAnalyzer = () => {
     setWakeTime("");
     setCryEpisodes("");
     setCryReason("");
+    setCustomReason("");
   };
 
   const getAverageSleep = () => {
@@ -279,6 +286,22 @@ const SleepAnalyzer = () => {
                   </Select>
                 </div>
               </div>
+              {cryReason === "unknown" && (
+                <div className="animate-fade-in">
+                  <Label htmlFor="customReason">Describe the reason (max 50 words)</Label>
+                  <Input
+                    id="customReason"
+                    type="text"
+                    value={customReason}
+                    onChange={(e) => setCustomReason(e.target.value)}
+                    placeholder="Describe what might have caused the crying..."
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {customReason.trim().split(/\s+/).filter(w => w).length} / 50 words
+                  </p>
+                </div>
+              )}
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button type="submit" className="flex-1">Record Sleep Session</Button>
                 <Button 
