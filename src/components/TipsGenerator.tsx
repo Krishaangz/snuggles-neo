@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Baby, Heart, Moon, Sun, Star, Coffee, BookOpen, Clock, Smile } from "lucide-react";
 
 const parentingTips = [
   "Babies thrive on routine - consistent sleep and feeding times help regulate their body clock.",
@@ -32,22 +32,16 @@ const TipsGenerator = ({ onClose }: TipsGeneratorProps) => {
   const [currentTip, setCurrentTip] = useState("");
   const [isVisible, setIsVisible] = useState(false);
 
+  const floatingIcons = [Baby, Heart, Moon, Sun, Star, Coffee, BookOpen, Clock, Smile, Star];
+
   useEffect(() => {
     // Get random tip
     const randomIndex = Math.floor(Math.random() * parentingTips.length);
     setCurrentTip(parentingTips[randomIndex]);
     
-    // Slide down animation
+    // Fade in animation
     setTimeout(() => setIsVisible(true), 100);
-    
-    // Auto-hide after 8 seconds
-    const hideTimer = setTimeout(() => {
-      setIsVisible(false);
-      setTimeout(onClose, 300);
-    }, 8000);
-    
-    return () => clearTimeout(hideTimer);
-  }, [onClose]);
+  }, []);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -55,30 +49,67 @@ const TipsGenerator = ({ onClose }: TipsGeneratorProps) => {
   };
 
   return (
-    <div 
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-[90%] transition-all duration-300 ${
-        isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-      }`}
-    >
-      <div className="bg-gradient-to-r from-primary via-accent to-secondary p-8 rounded-2xl shadow-float border-2 border-primary/30">
-        <button
-          onClick={handleClose}
-          className="absolute top-2 right-2 p-1 rounded-full hover:bg-primary-foreground/20 transition-colors"
-          aria-label="Close tip"
-        >
-          <X className="w-5 h-5 text-primary-foreground" />
-        </button>
+    <>
+      {/* Overlay */}
+      <div 
+        className={`fixed inset-0 bg-background/80 backdrop-blur-sm z-50 transition-opacity duration-300 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+        onClick={handleClose}
+      />
+      
+      {/* Centered Popup */}
+      <div 
+        className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 max-w-md w-[90%] transition-all duration-300 ${
+          isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+        }`}
+      >
+        {/* Floating Icons */}
+        {floatingIcons.map((Icon, index) => {
+          const angle = (index / floatingIcons.length) * 2 * Math.PI;
+          const radius = 150;
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius;
+          
+          return (
+            <div
+              key={index}
+              className="absolute top-1/2 left-1/2 pointer-events-none"
+              style={{
+                animation: `floatAround ${8 + index}s infinite ease-in-out`,
+                animationDelay: `${index * 0.5}s`,
+                transform: `translate(${x}px, ${y}px)`,
+              }}
+            >
+              <Icon className="w-6 h-6 text-primary" />
+            </div>
+          );
+        })}
         
-        <div className="space-y-3">
-          <h3 className="text-lg font-bold text-primary-foreground flex items-center gap-2">
-            💡 Parenting Tip
-          </h3>
-          <p className="text-primary-foreground/90 leading-relaxed">
-            {currentTip}
-          </p>
+        {/* Card */}
+        <div className="relative bg-gradient-to-br from-card via-card/95 to-card border-2 border-primary/20 p-8 rounded-2xl shadow-float">
+          <button
+            onClick={handleClose}
+            className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-muted transition-colors"
+            aria-label="Close tip"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Star className="w-6 h-6 text-primary animate-pulse" />
+              <h3 className="text-xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                Parenting Tip
+              </h3>
+            </div>
+            <p className="text-foreground/90 leading-relaxed">
+              {currentTip}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

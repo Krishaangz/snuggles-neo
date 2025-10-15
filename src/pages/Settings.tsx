@@ -88,8 +88,11 @@ const Settings = () => {
     }
   }, [navigate]);
 
+  const { updateUserProfile } = useAuthStore();
+
   const handleUpdateProfile = (e: React.FormEvent) => {
     e.preventDefault();
+    updateUserProfile(userName);
     toast.success("Profile updated successfully!");
   };
 

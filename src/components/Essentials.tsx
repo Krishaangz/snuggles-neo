@@ -1,10 +1,22 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Heart, Lightbulb, HelpCircle, MessageSquare, Flag, Bot, LineChart, Moon, UtensilsCrossed, Sparkles, BookOpen, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import ceoImage from "@/assets/ceo-kayze.png";
 
 const Essentials = () => {
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [reportType, setReportType] = useState("");
+  const [reportDescription, setReportDescription] = useState("");
+
   const features = [
     {
       icon: Bot,
@@ -83,55 +95,117 @@ const Essentials = () => {
     },
   ];
 
-  const handleContactSupport = () => {
-    toast.success("Support form opened! Our team typically responds within 24 hours.");
+  const handleContactSupport = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactName || !contactEmail || !contactMessage) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    toast.success("Support request submitted! Our team typically responds within 24 hours.");
+    setContactName("");
+    setContactEmail("");
+    setContactMessage("");
   };
 
-  const handleReportIssue = (type: string) => {
-    toast.success(`${type} report submitted. Thank you for helping us improve!`);
+  const handleReportIssue = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reportType || !reportDescription) {
+      toast.error("Please select a type and describe the issue");
+      return;
+    }
+    toast.success(`${reportType} report submitted. Thank you for helping us improve!`);
+    setReportType("");
+    setReportDescription("");
   };
 
   return (
     <div className="space-y-8 py-6">
-      {/* About Us */}
-      <Card className="p-6 gradient-card shadow-soft border-2">
-        <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <Heart className="w-6 h-6 text-primary" />
-          About Snuggles
-        </h3>
-        <div className="space-y-4 text-muted-foreground">
-          <p className="leading-relaxed">
-            <span className="font-semibold text-foreground">Our Story:</span> Snuggles was born from a simple truth — parenting can be overwhelming, even when it's beautiful. We wanted to create something that doesn't just give answers, but understands emotions.
-          </p>
-          <p className="leading-relaxed">
-            <span className="font-semibold text-foreground">Our Vision:</span> To make Snuggles the world's most trusted AI-driven baby wellness companion, where every insight is safe, every suggestion is kind, and every moment feels supported.
-          </p>
-          <p className="leading-relaxed">
-            <span className="font-semibold text-foreground">Our Mission:</span> To empower parents worldwide with personalized, expert-approved, and emotionally intelligent babycare, uniting verified science with heartfelt design.
-          </p>
+      {/* About Us Section */}
+      <Card className="p-8 gradient-card shadow-soft border-2 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
+        
+        <div className="relative z-10">
+          <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
+            <Heart className="w-8 h-8 text-primary" />
+            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+              About Snuggles
+            </span>
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-6 text-muted-foreground">
+              <div className="space-y-3">
+                <h4 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  Our Story
+                </h4>
+                <p className="leading-relaxed">
+                  Snuggles was born from a simple truth — parenting can be overwhelming, even when it's beautiful. We wanted to create something that doesn't just give answers, but understands emotions.
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                <h4 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-accent" />
+                  Our Vision
+                </h4>
+                <p className="leading-relaxed">
+                  To make Snuggles the world's most trusted AI-driven baby wellness companion, where every insight is safe, every suggestion is kind, and every moment feels supported.
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                <h4 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-secondary" />
+                  Our Mission
+                </h4>
+                <p className="leading-relaxed">
+                  To empower parents worldwide with personalized, expert-approved, and emotionally intelligent babycare, uniting verified science with heartfelt design.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
+                <img 
+                  src={ceoImage} 
+                  alt="CEO Kayze" 
+                  className="relative w-64 h-64 object-cover rounded-2xl border-4 border-primary/20 shadow-float"
+                />
+              </div>
+              <div className="text-center">
+                <h5 className="text-xl font-bold">CEO Kayze</h5>
+                <p className="text-sm text-muted-foreground">Founder & Visionary</p>
+              </div>
+            </div>
+          </div>
         </div>
       </Card>
 
-      {/* Features */}
-      <Card className="p-6 gradient-card shadow-soft border-2">
-        <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <Sparkles className="w-6 h-6 text-accent" />
-          What We Offer
+      {/* Features Section */}
+      <Card className="p-8 gradient-card shadow-soft border-2">
+        <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
+          <Sparkles className="w-8 h-8 text-accent" />
+          <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            What We Offer
+          </span>
         </h3>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-6">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <div 
                 key={index} 
-                className="p-4 rounded-xl bg-background/50 border border-border hover:shadow-soft transition-all"
+                className="p-6 rounded-xl bg-gradient-to-br from-background to-muted/30 border border-border hover:shadow-medium hover:border-primary/30 transition-all group"
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-5 h-5 text-primary" />
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <Icon className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">{feature.title}</h4>
+                    <h4 className="font-semibold text-lg mb-2">{feature.title}</h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {feature.description}
                     </p>
@@ -143,16 +217,18 @@ const Essentials = () => {
         </div>
       </Card>
 
-      {/* Help & FAQs */}
-      <Card className="p-6 gradient-card shadow-soft border-2">
-        <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <HelpCircle className="w-6 h-6 text-secondary" />
-          Frequently Asked Questions
+      {/* FAQs Section */}
+      <Card className="p-8 gradient-card shadow-soft border-2">
+        <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
+          <HelpCircle className="w-8 h-8 text-secondary" />
+          <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            Frequently Asked Questions
+          </span>
         </h3>
         <Accordion type="single" collapsible className="w-full">
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left">
+              <AccordionTrigger className="text-left hover:text-primary">
                 {faq.question}
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed">
@@ -163,56 +239,99 @@ const Essentials = () => {
         </Accordion>
       </Card>
 
-      {/* Contact Support */}
-      <Card className="p-6 gradient-card shadow-soft border-2">
-        <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <MessageSquare className="w-6 h-6 text-sky" />
-          Contact Support
+      {/* Contact Support Section */}
+      <Card className="p-8 gradient-card shadow-soft border-2">
+        <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
+          <MessageSquare className="w-8 h-8 text-sky" />
+          <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            Contact Support
+          </span>
         </h3>
-        <p className="text-muted-foreground mb-4">
+        <p className="text-muted-foreground mb-6">
           Need help? Our support team is here for you. We typically respond within 24 hours.
         </p>
-        <Button onClick={handleContactSupport} className="gap-2">
-          <MessageSquare className="w-4 h-4" />
-          Open Support Form
-        </Button>
+        <form onSubmit={handleContactSupport} className="space-y-4">
+          <div>
+            <Label htmlFor="contact-name">Name</Label>
+            <Input
+              id="contact-name"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              placeholder="Your name"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="contact-email">Email</Label>
+            <Input
+              id="contact-email"
+              type="email"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              placeholder="your@email.com"
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="contact-message">Message</Label>
+            <Textarea
+              id="contact-message"
+              value={contactMessage}
+              onChange={(e) => setContactMessage(e.target.value)}
+              placeholder="Describe your issue or question..."
+              rows={4}
+              required
+            />
+          </div>
+          <Button type="submit" className="gap-2">
+            <MessageSquare className="w-4 h-4" />
+            Submit Support Request
+          </Button>
+        </form>
       </Card>
 
-      {/* Report Issues */}
-      <Card className="p-6 gradient-card shadow-soft border-2">
-        <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <Flag className="w-6 h-6 text-destructive" />
-          Report an Issue
+      {/* Report Issues Section */}
+      <Card className="p-8 gradient-card shadow-soft border-2">
+        <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
+          <Flag className="w-8 h-8 text-destructive" />
+          <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            Report an Issue
+          </span>
         </h3>
-        <p className="text-muted-foreground mb-4">
+        <p className="text-muted-foreground mb-6">
           Help us improve Snuggles by reporting bugs or flagging inappropriate content.
         </p>
-        <div className="flex flex-wrap gap-3">
-          <Button 
-            variant="outline" 
-            onClick={() => handleReportIssue("Bug")}
-            className="gap-2"
-          >
+        <form onSubmit={handleReportIssue} className="space-y-4">
+          <div>
+            <Label htmlFor="report-type">Issue Type</Label>
+            <Select value={reportType} onValueChange={setReportType} required>
+              <SelectTrigger id="report-type">
+                <SelectValue placeholder="Select issue type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Bug Report">Bug Report</SelectItem>
+                <SelectItem value="Content Report">Content Report</SelectItem>
+                <SelectItem value="AI Report">AI Response Issue</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="report-description">Description</Label>
+            <Textarea
+              id="report-description"
+              value={reportDescription}
+              onChange={(e) => setReportDescription(e.target.value)}
+              placeholder="Please describe the issue in detail..."
+              rows={4}
+              required
+            />
+          </div>
+          <Button type="submit" variant="destructive" className="gap-2">
             <Flag className="w-4 h-4" />
-            Report Bug
+            Submit Report
           </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => handleReportIssue("Content")}
-            className="gap-2"
-          >
-            <Flag className="w-4 h-4" />
-            Flag Content
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => handleReportIssue("AI Response")}
-            className="gap-2"
-          >
-            <Flag className="w-4 h-4" />
-            Report AI Issue
-          </Button>
-        </div>
+        </form>
       </Card>
     </div>
   );

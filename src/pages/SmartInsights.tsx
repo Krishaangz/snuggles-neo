@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles, TrendingUp, Calendar, Brain, Heart, Moon, UtensilsCrossed } from "lucide-react";
+import { useAuthStore } from "@/stores/authStore";
+import { toast } from "sonner";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 interface InsightData {
   growth: any[];
@@ -13,6 +16,7 @@ interface InsightData {
 
 const SmartInsights = () => {
   const navigate = useNavigate();
+  const { isPremium } = useAuthStore();
   const [insights, setInsights] = useState<InsightData>({
     growth: [],
     sleep: [],
@@ -115,6 +119,38 @@ const SmartInsights = () => {
     return "Highly Engaged";
   };
 
+  // Prepare chart data
+  const dataDistribution = [
+    { name: 'Growth', value: insights.growth.length, color: 'hsl(var(--primary))' },
+    { name: 'Sleep', value: insights.sleep.length, color: 'hsl(var(--accent))' },
+    { name: 'Nutrition', value: insights.nutrition.length, color: 'hsl(var(--sky))' },
+    { name: 'Wellness', value: insights.wellness.length, color: 'hsl(var(--secondary))' },
+  ].filter(d => d.value > 0);
+
+  const weeklyActivity = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (6 - i));
+    const dateStr = date.toLocaleDateString();
+    
+    return {
+      day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()],
+      entries: [
+        insights.growth.filter((d: any) => new Date(d.date).toLocaleDateString() === dateStr).length,
+        insights.sleep.filter((d: any) => d.date === dateStr).length,
+        insights.nutrition.filter((d: any) => d.date === dateStr).length,
+        insights.wellness.filter((d: any) => d.date === dateStr).length,
+      ].reduce((a, b) => a + b, 0)
+    };
+  });
+
+  const showCharts = () => {
+    if (!isPremium()) {
+      toast.error("Premium Feature - Upgrade to unlock graphical insights");
+      return false;
+    }
+    return getTotalDataPoints() > 0;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
       <div className="container mx-auto px-4 py-8">
@@ -182,6 +218,69 @@ const SmartInsights = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Charts Section - Premium Only */}
+          {showCharts() && (
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <Card className="p-6 gradient-card shadow-medium border-2 border-primary/20">
+                <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                  Data Distribution
+                </h3>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={dataDistribution}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={(entry) => entry.name}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {dataDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Card>
+
+              <Card className="p-6 gradient-card shadow-medium border-2 border-accent/20">
+                <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-accent" />
+                  Weekly Activity
+                </h3>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={weeklyActivity}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="day" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="entries" fill="hsl(var(--primary))" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </div>
+          )}
+
+          {!isPremium() && getTotalDataPoints() > 0 && (
+            <Card className="p-6 mb-8 gradient-card shadow-medium border-2 border-primary/30">
+              <div className="text-center">
+                <Sparkles className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Unlock Graphical Insights</h3>
+                <p className="text-muted-foreground mb-4">
+                  Upgrade to Premium to view interactive charts and detailed analytics
+                </p>
+                <Button onClick={() => navigate("/settings")}>
+                  Upgrade Now
+                </Button>
+              </div>
+            </Card>
+          )}
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <Card className="p-6 gradient-card shadow-medium border-2 border-primary/20">

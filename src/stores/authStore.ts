@@ -333,6 +333,13 @@ class AuthStore {
   getWellnessData(): WellnessData[] {
     return [...this.state.wellnessData];
   }
+
+  updateUserProfile(name: string) {
+    if (this.state.user) {
+      this.state.user.name = name;
+      this.saveToStorage();
+    }
+  }
 }
 
 export const authStore = new AuthStore();
@@ -354,5 +361,6 @@ export function useAuthStore() {
     ...state,
     isPremium: () => authStore.isPremium(),
     upgradeMembership: (tier: 'monthly' | 'annual') => authStore.upgradeMembership(tier),
+    updateUserProfile: (name: string) => authStore.updateUserProfile(name),
   };
 }

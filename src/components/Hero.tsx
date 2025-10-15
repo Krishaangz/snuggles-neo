@@ -128,21 +128,6 @@ export const Hero = () => {
             </Button>
           </div>
           
-          {/* Stats with gradient backgrounds */}
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 pt-8 animate-fade-in stagger-3">
-            <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 shadow-soft min-w-[120px]">
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">50K+</div>
-              <div className="text-xs md:text-sm text-muted-foreground mt-1">Happy Parents</div>
-            </div>
-            <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20 shadow-soft min-w-[120px]">
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-secondary to-secondary-light bg-clip-text text-transparent">4.9★</div>
-              <div className="text-xs md:text-sm text-muted-foreground mt-1">Expert Rating</div>
-            </div>
-            <div className="text-center p-4 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 shadow-soft min-w-[120px]">
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">100%</div>
-              <div className="text-xs md:text-sm text-muted-foreground mt-1">Verified Content</div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
