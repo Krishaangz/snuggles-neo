@@ -1,10 +1,10 @@
-<!-- Snuggles by Sarang.co README.md -->
+<!-- Snuggles README.md -->
 
 <p align="center">
   <img src="https://ik.imagekit.io/kriz/Screenshot%202025-10-09%20215044.png?updatedAt=1760031002456" width="220" alt="Snuggles App Icon"/>
 </p>
 
-<h1 align="center">Snuggles by Sarang.co</h1>
+<h1 align="center">Snuggles</h1>
 <h3 align="center"><em>Your Baby's Digital Wellness Companion</em></h3>
 
 <p align="center">
@@ -197,7 +197,6 @@ We're just getting started. Here's what's coming:
 * [ ] IoT integration with smart baby monitors
 * [ ] Voice-activated hands-free assistant mode
 * [ ] Community pods for verified parent circles
-* [ ] Sarang Wallet for trusted products and consultations
 * [ ] Multi-language support (15+ languages by 2026)
 * [ ] Offline mode for low-connectivity areas
 * [ ] Blockchain-based health records
@@ -211,7 +210,7 @@ To run Snuggles locally:
 
 ```bash
 # Clone the repository
-git clone https://github.com/sarangco/snuggles.git
+git clone https://github.com/snuggles/snuggles.git
 
 # Navigate into the folder
 cd snuggles
@@ -259,25 +258,9 @@ snuggles/
 
 ---
 
-## <img src="https://api.iconify.design/lucide/users-round.svg?color=%23FFB6C1" width="28" /> About the Founders
+## <img src="https://api.iconify.design/lucide/lightbulb.svg?color=%2398D8C8" width="24" /> About the Founder
 
-### <img src="https://api.iconify.design/lucide/stethoscope.svg?color=%23FF69B4" width="24" /> Sarah Khan, Co-Founder & Chief Health Strategist
-
-Sarah Khan is a 15-year-old 11th grader from Ahmedabad, Gujarat, currently preparing for NEET with dreams of becoming a pediatrician or pedodontist. She's devoted to understanding how global public health expertise can be made accessible through technology that real people can actually use.
-
-Sarah watched family members and friends struggle with conflicting parenting advice and information overload, which sparked her passion for creating tools that cut through the noise with verified, trustworthy guidance. While she's still studying to enter medical school, she's already thinking deeply about how healthcare and technology can work together.
-
-**Core Belief:** *"Parents deserve guidance that's as kind as it is credible."*
-
-| Detail | Information |
-|--------|-------------|
-| **Role** | Co-Founder & Chief Health Strategist |
-| **Location** | Ahmedabad, Gujarat, India |
-| **Education** | Class 11, NEET Aspirant |
-| **Focus** | Pediatric Healthcare, Public Health, Medical Technology |
-| **Vision** | Making verified medical knowledge accessible through empathetic AI |
-
-### <img src="https://api.iconify.design/lucide/lightbulb.svg?color=%2398D8C8" width="24" /> Krishang Saharia, Co-Founder & Product Visionary
+### Krishang Saharia, Founder & Product Visionary
 
 Krishang Saharia is a 16-year-old 11th grader from Bhilai, Chhattisgarh, currently preparing for JEE while building his dream of launching an AI startup. He's an AI designer and storyteller passionate about creating technology that feels genuinely human.
 
@@ -289,7 +272,7 @@ His philosophy is that technology should feel warm and approachable, not cold an
 
 | Detail | Information |
 |--------|-------------|
-| **Role** | Co-Founder & Product Visionary |
+| **Role** | Founder & Product Visionary |
 | **Location** | Bhilai, Chhattisgarh, India |
 | **Education** | Class 11, JEE Aspirant |
 | **Focus** | AI Design, Product Development, Human-Centered Technology |
@@ -308,30 +291,30 @@ To become the world's most trusted AI-driven baby wellness companion where every
 
 ---
 
-## <img src="https://api.iconify.design/lucide/message-circle.svg?color=%23FFB6C1" width="28" /> Founders' Message
+## <img src="https://api.iconify.design/lucide/message-circle.svg?color=%23FFB6C1" width="28" /> Founder's Message
 
-> "Snuggles was born from a simple truth we both kept coming back to: parenting can be really overwhelming, even when it's absolutely beautiful. We saw so many parents struggling with conflicting advice, exhaustion, and feeling like they weren't doing enough (even though they were doing amazing).
+> "Snuggles was born from a simple truth I kept coming back to: parenting can be really overwhelming, even when it's absolutely beautiful. I saw so many parents struggling with conflicting advice, exhaustion, and feeling like they weren't doing enough (even though they were doing amazing).
 > 
-> We wanted to create something that doesn't just spit out answers like a search engine. We wanted to build something that actually understands emotions and meets you where you are. Because every night feed matters. Every cry that you learn to decode matters. Every tiny milestone matters so much.
+> I wanted to create something that doesn't just spit out answers like a search engine. I wanted to build something that actually understands emotions and meets you where you are. Because every night feed matters. Every cry that you learn to decode matters. Every tiny milestone matters so much.
 > 
-> Our dream with Snuggles is to make technology hold your hand through all of it. Gently, intelligently, and with genuine love and care. We're not trying to replace human connection or parent's intuition. We're here to support it, strengthen it, and make sure you never feel alone in this journey."
+> My dream with Snuggles is to make technology hold your hand through all of it. Gently, intelligently, and with genuine love and care. I'm not trying to replace human connection or parents' intuition. I'm here to support it, strengthen it, and make sure you never feel alone in this journey."
 >   
-> — *Sarah Khan & Krishang Saharia, Co-Founders of Snuggles by Sarang.co*
+> — *Krishang Saharia, Founder of Snuggles*
 
 ---
 
 ## <img src="https://api.iconify.design/lucide/mail.svg?color=%2398D8C8" width="28" /> Contact
 
-**Email:** [hello@sarang.co](mailto:hello@sarang.co)  
-**Official Site:** [www.sarang.co/snuggles](https://www.sarang.co/snuggles)  
-**Support:** [support@sarang.co](mailto:support@sarang.co)  
+**Email:** [hello@snuggles.app](mailto:hello@snuggles.app)  
+**Official Site:** [www.snuggles.app](https://www.snuggles.app)  
+**Support:** [support@snuggles.app](mailto:support@snuggles.app)  
 **Community:** Discord + Telegram (Coming Soon)
 
 ---
 
 <p align="center">
   <em>Built with 💜 by the Snuggles Team</em><br>
-  <sub>© 2025 Sarang.co | Where Technology Meets Compassion</sub>
+  <sub>© 2025 Snuggles | Where Technology Meets Compassion</sub>
 </p>
 
 ---
