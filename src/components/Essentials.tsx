@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Heart, Lightbulb, HelpCircle, MessageSquare, Flag, Bot, LineChart, Moon, UtensilsCrossed, Sparkles, BookOpen, AlertCircle } from "lucide-react";
+import { Heart, Lightbulb, HelpCircle, MessageSquare, Flag, Bot, LineChart, Moon, UtensilsCrossed, Sparkles, BookOpen, AlertCircle, Upload, X, Image, FileText } from "lucide-react";
 import { toast } from "sonner";
 import ceoImage from "@/assets/ceo-kayze.png";
 
@@ -16,6 +16,7 @@ const Essentials = () => {
   const [contactMessage, setContactMessage] = useState("");
   const [reportType, setReportType] = useState("");
   const [reportDescription, setReportDescription] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const features = [
     {
@@ -95,8 +96,7 @@ const Essentials = () => {
     },
   ];
 
-  const handleContactSupport = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleContactSupport = () => {
     if (!contactName || !contactEmail || !contactMessage) {
       toast.error("Please fill in all fields");
       return;
@@ -107,20 +107,65 @@ const Essentials = () => {
     setContactMessage("");
   };
 
-  const handleReportIssue = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    const maxSize = 5 * 1024 * 1024;
+    const validFiles = files.filter(file => {
+      if (file.size > maxSize) {
+        toast.error(`${file.name} is too large. Maximum size is 5MB.`);
+        return false;
+      }
+      return true;
+    });
+
+    const currentTotal = uploadedFiles.length + validFiles.length;
+    if (currentTotal > 5) {
+      toast.error("You can upload a maximum of 5 files.");
+      setUploadedFiles([...uploadedFiles, ...validFiles].slice(0, 5));
+    } else {
+      setUploadedFiles([...uploadedFiles, ...validFiles]);
+      toast.success(`${validFiles.length} file(s) added successfully`);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+    toast.success("File removed");
+  };
+
+  const getFileIcon = (file: File) => {
+    if (file.type.startsWith('image/')) {
+      return <Image className="w-4 h-4" />;
+    }
+    return <FileText className="w-4 h-4" />;
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  const handleReportIssue = () => {
     if (!reportType || !reportDescription) {
       toast.error("Please select a type and describe the issue");
       return;
     }
-    toast.success(`${reportType} report submitted. Thank you for helping us improve!`);
+    
+    const fileCount = uploadedFiles.length;
+    const message = fileCount > 0 
+      ? `${reportType} report submitted with ${fileCount} file(s). Thank you for helping us improve!`
+      : `${reportType} report submitted. Thank you for helping us improve!`;
+    
+    toast.success(message);
     setReportType("");
     setReportDescription("");
+    setUploadedFiles([]);
   };
 
   return (
     <div className="space-y-8 py-6">
-      {/* About Us Section */}
       <Card className="p-8 gradient-card shadow-soft border-2 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
@@ -171,7 +216,7 @@ const Essentials = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
                 <img 
                   src={ceoImage} 
-                  alt="Krishang Saharia" 
+                  alt="CEO Kayze" 
                   className="relative w-64 h-64 object-cover rounded-2xl border-4 border-primary/20 shadow-float"
                 />
               </div>
@@ -184,7 +229,6 @@ const Essentials = () => {
         </div>
       </Card>
 
-      {/* Features Section */}
       <Card className="p-8 gradient-card shadow-soft border-2">
         <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
           <Sparkles className="w-8 h-8 text-accent" />
@@ -217,7 +261,6 @@ const Essentials = () => {
         </div>
       </Card>
 
-      {/* FAQs Section */}
       <Card className="p-8 gradient-card shadow-soft border-2">
         <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
           <HelpCircle className="w-8 h-8 text-secondary" />
@@ -239,7 +282,6 @@ const Essentials = () => {
         </Accordion>
       </Card>
 
-      {/* Contact Support Section */}
       <Card className="p-8 gradient-card shadow-soft border-2">
         <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
           <MessageSquare className="w-8 h-8 text-sky" />
@@ -250,7 +292,7 @@ const Essentials = () => {
         <p className="text-muted-foreground mb-6">
           Need help? Our support team is here for you. We typically respond within 24 hours.
         </p>
-        <form onSubmit={handleContactSupport} className="space-y-4">
+        <div className="space-y-4">
           <div>
             <Label htmlFor="contact-name">Name</Label>
             <Input
@@ -258,7 +300,6 @@ const Essentials = () => {
               value={contactName}
               onChange={(e) => setContactName(e.target.value)}
               placeholder="Your name"
-              required
             />
           </div>
           <div>
@@ -269,7 +310,6 @@ const Essentials = () => {
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
               placeholder="your@email.com"
-              required
             />
           </div>
           <div>
@@ -280,17 +320,15 @@ const Essentials = () => {
               onChange={(e) => setContactMessage(e.target.value)}
               placeholder="Describe your issue or question..."
               rows={4}
-              required
             />
           </div>
-          <Button type="submit" className="gap-2">
+          <Button onClick={handleContactSupport} className="gap-2">
             <MessageSquare className="w-4 h-4" />
             Submit Support Request
           </Button>
-        </form>
+        </div>
       </Card>
 
-      {/* Report Issues Section */}
       <Card className="p-8 gradient-card shadow-soft border-2">
         <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
           <Flag className="w-8 h-8 text-destructive" />
@@ -299,12 +337,12 @@ const Essentials = () => {
           </span>
         </h3>
         <p className="text-muted-foreground mb-6">
-          Help us improve Snuggles by reporting bugs or flagging inappropriate content.
+          Help us improve Snuggles by reporting bugs or flagging inappropriate content. You can attach screenshots or files as evidence.
         </p>
-        <form onSubmit={handleReportIssue} className="space-y-4">
+        <div className="space-y-4">
           <div>
             <Label htmlFor="report-type">Issue Type</Label>
-            <Select value={reportType} onValueChange={setReportType} required>
+            <Select value={reportType} onValueChange={setReportType}>
               <SelectTrigger id="report-type">
                 <SelectValue placeholder="Select issue type" />
               </SelectTrigger>
@@ -324,14 +362,76 @@ const Essentials = () => {
               onChange={(e) => setReportDescription(e.target.value)}
               placeholder="Please describe the issue in detail..."
               rows={4}
-              required
             />
           </div>
-          <Button type="submit" variant="destructive" className="gap-2">
+
+          <div className="space-y-3">
+            <Label htmlFor="file-upload">Attach Evidence (Optional)</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="file-upload"
+                type="file"
+                multiple
+                accept="image/*,.pdf,.txt,.doc,.docx"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => document.getElementById('file-upload')?.click()}
+                className="gap-2"
+                disabled={uploadedFiles.length >= 5}
+              >
+                <Upload className="w-4 h-4" />
+                Upload Files
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                Max 5 files, 5MB each
+              </span>
+            </div>
+
+            {uploadedFiles.length > 0 && (
+              <div className="space-y-2 mt-4">
+                <p className="text-sm font-medium">Uploaded Files ({uploadedFiles.length}/5):</p>
+                <div className="space-y-2">
+                  {uploadedFiles.map((file, index) => (
+                    <div 
+                      key={index}
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border hover:border-primary/30 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          {getFileIcon(file)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{file.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatFileSize(file.size)}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeFile(index)}
+                        className="flex-shrink-0 hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <Button onClick={handleReportIssue} variant="destructive" className="gap-2">
             <Flag className="w-4 h-4" />
             Submit Report
           </Button>
-        </form>
+        </div>
       </Card>
     </div>
   );
