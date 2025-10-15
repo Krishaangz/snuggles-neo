@@ -171,7 +171,7 @@ const Essentials = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
                 <img 
                   src={ceoImage} 
-                  alt="CEO Kayze" 
+                  alt="Krishang Saharia" 
                   className="relative w-64 h-64 object-cover rounded-2xl border-4 border-primary/20 shadow-float"
                 />
               </div>
